@@ -1,0 +1,10 @@
+.claude/
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+chroma_db/
+*.egg-info/
+.pytest_cache/
+.DS_Store
