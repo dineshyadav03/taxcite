@@ -1,0 +1,7 @@
+requests
+pdfplumber
+chromadb
+sentence-transformers
+tiktoken
+groq
+python-dotenv
