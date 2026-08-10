@@ -1,4 +1,4 @@
-# Income Tax RAG
+# TaxCite
 
 A citation-grounded RAG system over Indian income tax law — ask a question and get an answer grounded in the actual statutory text, with a citation back to the exact Act, chapter, and section it came from.
 

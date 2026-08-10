@@ -8,7 +8,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))
 
 from generate import GROQ_API_KEY, GROQ_MODEL, OLLAMA_MODEL, answer_question  # noqa: E402
 
-st.set_page_config(page_title="Income Tax RAG", page_icon="\U0001f4dc", layout="centered")
+st.set_page_config(page_title="TaxCite", page_icon="\U0001f4dc", layout="centered")
 
 
 @st.cache_resource(show_spinner="Building the search index (one-time setup)...")
@@ -33,7 +33,7 @@ _ensure_index_built()
 if "question" not in st.session_state:
     st.session_state.question = ""
 
-st.title("Income Tax RAG")
+st.title("TaxCite")
 st.caption(
     "Ask about Indian income tax law. Every answer is grounded in the actual statutory text "
     "of the Income-tax Act, 2025 or the superseded 1961 Act, cited by Act and section -- the "
