@@ -1,0 +1,1052 @@
+{
+ "2": {
+  "act_1961_section": "2",
+  "in_degree": 85,
+  "candidates": [
+   {
+    "act_2025_section": "355",
+    "confidence": "none",
+    "rationale": "The 2025 Act Section 355 defines terms related to donations and approvals, which is unrelated to the 1961 Act Section 2's definitions of various terms including 'advance tax', 'agricultural income', and 'assesse'."
+   },
+   {
+    "act_2025_section": "73",
+    "confidence": "none",
+    "rationale": "The 2025 Act Section 73 deals with the cost of acquisition of capital assets, which is unrelated to the 1961 Act Section 2's definitions of various terms including 'advance tax', 'agricultural income', and 'assesse'."
+   },
+   {
+    "act_2025_section": "9",
+    "confidence": "partial",
+    "rationale": "The 2025 Act Section 9 deals with the income deemed to accrue or arise in India, which is related to the 1961 Act Section 2's definition of 'agricultural income' as income derived from land in India. However, the scope of Section 9 is broader and covers various types of income, whereas Section 2 of the 1961 Act is a glossary section defining various terms."
+   }
+  ]
+ },
+ "139": {
+  "act_1961_section": "139",
+  "in_degree": 70,
+  "candidates": [
+   {
+    "act_2025_section": "263",
+    "confidence": "strong",
+    "rationale": "Both sections 139 of the 1961 Act and section 263 of the 2025 Act require individuals and entities to file a return of income on or before a specified due date, with similar conditions and exemptions."
+   },
+   {
+    "act_2025_section": "262",
+    "confidence": "none",
+    "rationale": "Section 262 of the 2025 Act deals with the allotment of Permanent Account Numbers, which is unrelated to the filing of returns of income as required by section 139 of the 1961 Act."
+   },
+   {
+    "act_2025_section": "510",
+    "confidence": "none",
+    "rationale": "Section 510 of the 2025 Act deals with the uploading of annual information statements, which is unrelated to the filing of returns of income as required by section 139 of the 1961 Act."
+   }
+  ]
+ },
+ "10": {
+  "act_1961_section": "10",
+  "in_degree": 60,
+  "candidates": [
+   {
+    "act_2025_section": "2",
+    "confidence": "none",
+    "rationale": "Section 2 of the 2025 Act is a glossary section defining various terms, but it does not cover the same breadth of exemptions as Section 10 of the 1961 Act."
+   },
+   {
+    "act_2025_section": "1",
+    "confidence": "none",
+    "rationale": "Section 1 of the 2025 Act lists various modes of investing or depositing money, but it does not cover the same exemptions as Section 10 of the 1961 Act."
+   },
+   {
+    "act_2025_section": "338",
+    "confidence": "strong",
+    "rationale": "Section 338 of the 2025 Act specifically excludes certain income from the regular income of a registered non-profit organisation, which is similar to the exemptions listed in Section 10 of the 1961 Act for certain types of income."
+   }
+  ]
+ },
+ "3": {
+  "act_1961_section": "3",
+  "in_degree": 37,
+  "candidates": [
+   {
+    "act_2025_section": "4",
+    "confidence": "strong",
+    "rationale": "Both sections deal with the conditions for recognition of provident funds and the process of withdrawal of recognition."
+   },
+   {
+    "act_2025_section": "11",
+    "confidence": "none",
+    "rationale": "This section deals with the treatment of balances in newly recognised provident funds, which is unrelated to the conditions for recognition of provident funds in the 1961 Act Section 3."
+   },
+   {
+    "act_2025_section": "529",
+    "confidence": "none",
+    "rationale": "This section deals with the power to grant and withdraw approval under various provisions of the Act, which is unrelated to the recognition of provident funds in the 1961 Act Section 3."
+   }
+  ]
+ },
+ "288": {
+  "act_1961_section": "288",
+  "in_degree": 34,
+  "candidates": [
+   {
+    "act_2025_section": "515",
+    "confidence": "strong",
+    "rationale": "Both sections 288 and 515 of the 1961 and 2025 Acts, respectively, allow an assessee to attend before an income-tax authority or the Appellate Tribunal through an authorised representative, subject to certain conditions."
+   },
+   {
+    "act_2025_section": "513",
+    "confidence": "none",
+    "rationale": "Section 513 of the 2025 Act is unrelated to the provisions of section 288 of the 1961 Act, as it specifically deals with the attendance of a registered valuer in matters related to the valuation of assets."
+   },
+   {
+    "act_2025_section": "264",
+    "confidence": "none",
+    "rationale": "Section 264 of the 2025 Act is unrelated to the provisions of section 288 of the 1961 Act, as it deals with the submission of tax returns through a tax return preparer, which is a distinct concept from the attendance of an authorised representative."
+   }
+  ]
+ },
+ "80": {
+  "act_1961_section": "80",
+  "in_degree": 29,
+  "candidates": [
+   {
+    "act_2025_section": "121",
+    "confidence": "strong",
+    "rationale": "Both sections restrict carrying forward and setting off losses that have not been determined in a return filed under specified provisions."
+   },
+   {
+    "act_2025_section": "204",
+    "confidence": "none",
+    "rationale": "Section 204 deals with computation of income-tax for co-operative societies and does not relate to carrying forward and setting off losses."
+   },
+   {
+    "act_2025_section": "114",
+    "confidence": "partial",
+    "rationale": "Section 114 deals with set off and carry forward of losses, but it is more specific to specified businesses and does not cover all types of losses as Section 80 of the 1961 Act."
+   }
+  ]
+ },
+ "142": {
+  "act_1961_section": "142",
+  "in_degree": 26,
+  "candidates": [
+   {
+    "act_2025_section": "270",
+    "confidence": "none",
+    "rationale": "Section 270 of the 2025 Act deals with processing of returns and adjustments, but it does not cover the same scope as Section 142 of the 1961 Act, which deals with assessment and audit procedures."
+   },
+   {
+    "act_2025_section": "268",
+    "confidence": "strong",
+    "rationale": "Section 268 of the 2025 Act is a functional equivalent of Section 142 of the 1961 Act, as it deals with serving notices to taxpayers who have not made returns or have made incorrect returns, and requires them to furnish returns and get their accounts audited."
+   },
+   {
+    "act_2025_section": "280",
+    "confidence": "none",
+    "rationale": "Section 280 of the 2025 Act deals with the issue of notices for assessment, reassessment, or recomputation, but it does not cover the same scope as Section 142 of the 1961 Act, which deals with assessment and audit procedures."
+   }
+  ]
+ },
+ "32": {
+  "act_1961_section": "32",
+  "in_degree": 25,
+  "candidates": [
+   {
+    "act_2025_section": "33",
+    "confidence": "strong",
+    "rationale": "Section 33 of the 2025 Act directly corresponds to Section 32 of the 1961 Act, covering the same subject of depreciation and allowing deductions for tangible and intangible assets."
+   },
+   {
+    "act_2025_section": "75",
+    "confidence": "none",
+    "rationale": "Section 75 of the 2025 Act appears to be unrelated to the subject of depreciation and does not correspond to Section 32 of the 1961 Act."
+   },
+   {
+    "act_2025_section": "41",
+    "confidence": "partial",
+    "rationale": "Section 41 of the 2025 Act defines the written down value of depreciable assets, which is related to the concept of depreciation in Section 32 of the 1961 Act, but it does not directly correspond to the entire section."
+   }
+  ]
+ },
+ "147": {
+  "act_1961_section": "147",
+  "in_degree": 24,
+  "candidates": [
+   {
+    "act_2025_section": "279",
+    "confidence": "strong",
+    "rationale": "Both sections 147 and 279 of the 1961 and 2025 Acts, respectively, deal with the Assessing Officer's power to assess or reassess income that has escaped assessment."
+   },
+   {
+    "act_2025_section": "280",
+    "confidence": "none",
+    "rationale": "Section 280 of the 2025 Act deals with the issue of notice under section 279, which is a procedural aspect, whereas section 147 of the 1961 Act deals with the Assessing Officer's power to assess or reassess income that has escaped assessment."
+   },
+   {
+    "act_2025_section": "282",
+    "confidence": "none",
+    "rationale": "Section 282 of the 2025 Act deals with the time limit for issuing a notice under section 280, which is a procedural aspect, whereas section 147 of the 1961 Act deals with the Assessing Officer's power to assess or reassess income that has escaped assessment."
+   }
+  ]
+ },
+ "155": {
+  "act_1961_section": "155",
+  "in_degree": 22,
+  "candidates": [
+   {
+    "act_2025_section": "288",
+    "confidence": "strong",
+    "rationale": "Both sections deal with the Assessing Officer's power to recompute total income and make necessary amendments, with similar conditions and time limits."
+   },
+   {
+    "act_2025_section": "279",
+    "confidence": "partial",
+    "rationale": "Section 279 deals with assessing or reassessing income that has escaped assessment, but it does not cover the specific scenarios and conditions mentioned in Section 155 of the 1961 Act."
+   },
+   {
+    "act_2025_section": "439",
+    "confidence": "none",
+    "rationale": "Section 439 deals with imposing penalty for under-reported income, which is unrelated to the scenarios and conditions mentioned in Section 155 of the 1961 Act."
+   }
+  ]
+ },
+ "245D": {
+  "act_1961_section": "245D",
+  "in_degree": 22,
+  "candidates": [
+   {
+    "act_2025_section": "469",
+    "confidence": "none",
+    "rationale": "Section 469 deals with the power to reduce or waive penalty, whereas Section 245D of the 1961 Act deals with the Settlement Commission's process for allowing or rejecting applications for settlement."
+   },
+   {
+    "act_2025_section": "298",
+    "confidence": "none",
+    "rationale": "Section 298 deals with the interest and penalty for non-furnishing of return of undisclosed income, whereas Section 245D of the 1961 Act deals with the Settlement Commission's process for allowing or rejecting applications for settlement."
+   },
+   {
+    "act_2025_section": "378",
+    "confidence": "partial",
+    "rationale": "Section 378 deals with the revision of orders by the Competent Authority, which is related to the Settlement Commission's process for allowing or rejecting applications for settlement, but it is not a direct equivalent."
+   }
+  ]
+ },
+ "90": {
+  "act_1961_section": "90",
+  "in_degree": 22,
+  "candidates": [
+   {
+    "act_2025_section": "451",
+    "confidence": "none",
+    "rationale": "This section deals with penalties for failure to comply with provisions, whereas the 1961 Act Section 90 deals with the subsistence of a defaulter in civil prison."
+   },
+   {
+    "act_2025_section": "450",
+    "confidence": "none",
+    "rationale": "This section deals with penalties for taking or accepting loans in contravention of provisions, whereas the 1961 Act Section 90 deals with the subsistence of a defaulter in civil prison."
+   },
+   {
+    "act_2025_section": "419",
+    "confidence": "none",
+    "rationale": "This section deals with the recovery of penalties, fines, and other sums, whereas the 1961 Act Section 90 deals with the subsistence of a defaulter in civil prison."
+   }
+  ]
+ },
+ "154": {
+  "act_1961_section": "154",
+  "in_degree": 21,
+  "candidates": [
+   {
+    "act_2025_section": "287",
+    "confidence": "strong",
+    "rationale": "Both sections 154 and 287 of the 1961 and 2025 Acts, respectively, deal with the rectification of mistakes apparent from the record and allow for the amendment of orders and intimations."
+   },
+   {
+    "act_2025_section": "298",
+    "confidence": "none",
+    "rationale": "Section 298 of the 2025 Act deals with the payment of interest on undisclosed income, which is unrelated to the rectification of mistakes apparent from the record in section 154 of the 1961 Act."
+   },
+   {
+    "act_2025_section": "378",
+    "confidence": "none",
+    "rationale": "Section 378 of the 2025 Act deals with the revision of orders by the Competent Authority, which is unrelated to the rectification of mistakes apparent from the record in section 154 of the 1961 Act."
+   }
+  ]
+ },
+ "72": {
+  "act_1961_section": "72",
+  "in_degree": 21,
+  "candidates": [
+   {
+    "act_2025_section": "416",
+    "confidence": "strong",
+    "rationale": "This section provides for the recovery of tax by the Assessing Officer or Tax Recovery Officer, which includes the withdrawal of attachment and management at the discretion of the Tax Recovery Officer, as mentioned in the 1961 Act Section 72."
+   },
+   {
+    "act_2025_section": "419",
+    "confidence": "none",
+    "rationale": "This section deals with the recovery of penalties, fines, and other sums payable under the Act, which is not related to the withdrawal of attachment and management as mentioned in the 1961 Act Section 72."
+   },
+   {
+    "act_2025_section": "421",
+    "confidence": "none",
+    "rationale": "This section deals with the law not affected by the recovery modes specified in this Part, which is not related to the withdrawal of attachment and management as mentioned in the 1961 Act Section 72."
+   }
+  ]
+ },
+ "45": {
+  "act_1961_section": "45",
+  "in_degree": 20,
+  "candidates": [
+   {
+    "act_2025_section": "67",
+    "confidence": "strong",
+    "rationale": "Both sections deal with the taxation of capital gains, including the treatment of profits or gains arising from the transfer of a capital asset, and the application of certain provisions in specific circumstances."
+   },
+   {
+    "act_2025_section": "73",
+    "confidence": "none",
+    "rationale": "Section 73 deals with the cost of acquisition of a capital asset, which is a different concept from the taxation of capital gains dealt with in Section 45 of the 1961 Act."
+   },
+   {
+    "act_2025_section": "80",
+    "confidence": "strong",
+    "rationale": "Both sections deal with the determination of the full value of consideration received or accruing from the transfer of a capital asset, although Section 80 of the 2025 Act is more specific about the circumstances in which the fair market value is deemed to be the full value of consideration."
+   }
+  ]
+ },
+ "132A": {
+  "act_1961_section": "132A",
+  "in_degree": 19,
+  "candidates": [
+   {
+    "act_2025_section": "250",
+    "confidence": "strong",
+    "rationale": "Both sections deal with the recovery of liabilities from seized or requisitioned assets, with similar provisions for the manner of recovery and the treatment of remaining assets."
+   },
+   {
+    "act_2025_section": "248",
+    "confidence": "partial",
+    "rationale": "While both sections deal with the requisitioning of assets, the 2025 Act section is more focused on the process of requisitioning, whereas the 1961 Act section is more focused on the consequences of requisitioning, including the recovery of liabilities."
+   },
+   {
+    "act_2025_section": "251",
+    "confidence": "none",
+    "rationale": "This section deals with the release of seized or requisitioned assets to the Assessing Officer, which is not the main focus of the 1961 Act section 132A."
+   }
+  ]
+ },
+ "144": {
+  "act_1961_section": "144",
+  "in_degree": 19,
+  "candidates": [
+   {
+    "act_2025_section": "271",
+    "confidence": "strong",
+    "rationale": "Both sections deal with consequences of non-compliance with return and notice requirements, with similar structure and content."
+   },
+   {
+    "act_2025_section": "280",
+    "confidence": "none",
+    "rationale": "This section deals with the issue of notice for assessment, reassessment, or recomputation, which is unrelated to the consequences of non-compliance with return and notice requirements."
+   },
+   {
+    "act_2025_section": "268",
+    "confidence": "none",
+    "rationale": "This section deals with the service of notice for making an assessment, which is also unrelated to the consequences of non-compliance with return and notice requirements."
+   }
+  ]
+ },
+ "28": {
+  "act_1961_section": "28",
+  "in_degree": 18,
+  "candidates": [
+   {
+    "act_2025_section": "26",
+    "confidence": "strong",
+    "rationale": "Section 26 of the 2025 Act directly corresponds to Section 28 of the 1961 Act, covering the same subject matter of income chargeable to tax under the head 'Profits and gains of business or profession'."
+   },
+   {
+    "act_2025_section": "95",
+    "confidence": "none",
+    "rationale": "Section 95 of the 2025 Act is unrelated to Section 28 of the 1961 Act, as it deals with the application of provisions in computing income under section 92, which is not relevant to the subject matter of Section 28."
+   },
+   {
+    "act_2025_section": "27",
+    "confidence": "none",
+    "rationale": "Section 27 of the 2025 Act is unrelated to Section 28 of the 1961 Act, as it deals with the computation of income referred to in section 26, which is not relevant to the subject matter of Section 28."
+   }
+  ]
+ },
+ "36": {
+  "act_1961_section": "36",
+  "in_degree": 18,
+  "candidates": [
+   {
+    "act_2025_section": "31",
+    "confidence": "strong",
+    "rationale": "Both sections deal with the deduction of bad and doubtful debts, with similar conditions and requirements."
+   },
+   {
+    "act_2025_section": "32",
+    "confidence": "none",
+    "rationale": "Section 32 deals with various other deductions, including bonus, interest, and securities transaction tax, but does not cover bad and doubtful debts."
+   },
+   {
+    "act_2025_section": "56",
+    "confidence": "none",
+    "rationale": "Section 56 deals with the interest income of specified financial institutions, but does not cover bad and doubtful debts or the deduction of such debts."
+   }
+  ]
+ },
+ "148": {
+  "act_1961_section": "148",
+  "in_degree": 17,
+  "candidates": [
+   {
+    "act_2025_section": "280",
+    "confidence": "strong",
+    "rationale": "Both sections require the Assessing Officer to serve a notice to the assessee before making an assessment, reassessment, or recomputation, and both specify the information that must be furnished in the return."
+   },
+   {
+    "act_2025_section": "268",
+    "confidence": "none",
+    "rationale": "This section appears to be related to the assessment process, but it does not match the requirements of the 1961 Act Section 148, which is focused on serving a notice to the assessee before making an assessment, reassessment, or recomputation."
+   },
+   {
+    "act_2025_section": "271",
+    "confidence": "none",
+    "rationale": "This section appears to be related to penalties for non-compliance with notices, but it does not match the requirements of the 1961 Act Section 148, which is focused on serving a notice to the assessee before making an assessment, reassessment, or recomputation."
+   }
+  ]
+ },
+ "245C": {
+  "act_1961_section": "245C",
+  "in_degree": 17,
+  "candidates": [
+   {
+    "act_2025_section": "469",
+    "confidence": "strong",
+    "rationale": "Both sections deal with the power to reduce or waive penalty, and require a full and true disclosure of income or particulars."
+   },
+   {
+    "act_2025_section": "443",
+    "confidence": "none",
+    "rationale": "This section deals with imposing a penalty for certain types of income, whereas the 1961 Act Section 245C deals with making an application to the Settlement Commission for settlement of cases."
+   },
+   {
+    "act_2025_section": "298",
+    "confidence": "none",
+    "rationale": "This section deals with penalty for not furnishing a return of undisclosed income, whereas the 1961 Act Section 245C deals with making an application to the Settlement Commission for settlement of cases."
+   }
+  ]
+ },
+ "254": {
+  "act_1961_section": "254",
+  "in_degree": 17,
+  "candidates": [
+   {
+    "act_2025_section": "363",
+    "confidence": "strong",
+    "rationale": "The 2025 Act Section 363 is a functional equivalent of the 1961 Act Section 254, covering the same subject matter of Appellate Tribunal orders and amendments."
+   },
+   {
+    "act_2025_section": "298",
+    "confidence": "none",
+    "rationale": "The 2025 Act Section 298 deals with interest on undisclosed income, which is unrelated to the subject matter of the 1961 Act Section 254."
+   },
+   {
+    "act_2025_section": "362",
+    "confidence": "none",
+    "rationale": "The 2025 Act Section 362 deals with appeals to the Appellate Tribunal, which is a related but distinct subject matter from the 1961 Act Section 254, which deals with the powers of the Appellate Tribunal."
+   }
+  ]
+ },
+ "9": {
+  "act_1961_section": "9",
+  "in_degree": 17,
+  "candidates": [
+   {
+    "act_2025_section": "143",
+    "confidence": "none",
+    "rationale": "Section 143 of the 2025 Act deals with a specific deduction for profits and gains from certain businesses, whereas Section 9 of the 1961 Act lists various items exempt from income tax. They are unrelated."
+   },
+   {
+    "act_2025_section": "61",
+    "confidence": "none",
+    "rationale": "Section 61 of the 2025 Act deals with the computation of profits and gains of specified businesses on a presumptive basis, whereas Section 9 of the 1961 Act lists various items exempt from income tax. They are unrelated."
+   },
+   {
+    "act_2025_section": "394",
+    "confidence": "none",
+    "rationale": "Section 394 of the 2025 Act deals with tax collection at source, whereas Section 9 of the 1961 Act lists various items exempt from income tax. They are unrelated."
+   }
+  ]
+ },
+ "153A": {
+  "act_1961_section": "153A",
+  "in_degree": 16,
+  "candidates": [
+   {
+    "act_2025_section": "296",
+    "confidence": "strong",
+    "rationale": "Both sections deal with the time limit for completion of assessment under search and requisition, with similar provisions for extension of time limits."
+   },
+   {
+    "act_2025_section": "292",
+    "confidence": "partial",
+    "rationale": "Section 292 deals with the assessment or reassessment of income as a result of search, but it does not specifically address the time limit for completion of assessment, which is the main focus of Section 153A of the 1961 Act."
+   },
+   {
+    "act_2025_section": "294",
+    "confidence": "none",
+    "rationale": "Section 294 deals with the notice to be issued to the person requiring them to furnish a return in the form and verified in the manner as may be prescribed, setting forth their undisclosed income for the block period, but it does not address the time limit for completion of assessment under search and requisition."
+   }
+  ]
+ },
+ "192": {
+  "act_1961_section": "192",
+  "in_degree": 16,
+  "candidates": [
+   {
+    "act_2025_section": "392",
+    "confidence": "strong",
+    "rationale": "Both sections 192 and 392 of the Income-tax Act, 1961 and 2025 respectively, deal with the deduction of income-tax at source from salaries."
+   },
+   {
+    "act_2025_section": "15",
+    "confidence": "none",
+    "rationale": "Section 15 of the 2025 Act deals with the income chargeable to tax under the head 'Salaries', which is a different subject from section 192 of the 1961 Act."
+   },
+   {
+    "act_2025_section": "35",
+    "confidence": "none",
+    "rationale": "Section 35 of the 2025 Act deals with the disallowance of certain deductions in computing business income, which is unrelated to the subject of section 192 of the 1961 Act."
+   }
+  ]
+ },
+ "35": {
+  "act_1961_section": "35",
+  "in_degree": 16,
+  "candidates": [
+   {
+    "act_2025_section": "517",
+    "confidence": "none",
+    "rationale": "This section deals with receipts for money paid or recovered under the Act, which is unrelated to the 1961 Act Section 35's provision on attachment by seizure."
+   },
+   {
+    "act_2025_section": "450",
+    "confidence": "none",
+    "rationale": "This section deals with penalties for contravention of provisions, which is unrelated to the 1961 Act Section 35's provision on attachment by seizure."
+   },
+   {
+    "act_2025_section": "300",
+    "confidence": "none",
+    "rationale": "This section deals with the applicability of other provisions of the Act, which is unrelated to the 1961 Act Section 35's provision on attachment by seizure."
+   }
+  ]
+ },
+ "4": {
+  "act_1961_section": "4",
+  "in_degree": 16,
+  "candidates": [
+   {
+    "act_2025_section": "4",
+    "confidence": "strong",
+    "rationale": "The 2025 Act Section 4 is a direct functional equivalent of the 1961 Act Section 4, with minor rewording and renumbering."
+   },
+   {
+    "act_2025_section": "29",
+    "confidence": "none",
+    "rationale": "The 2025 Act Section 29 is unrelated to the 1961 Act Section 4, as it deals with deductions for recognised provident funds rather than the conditions for recognition."
+   },
+   {
+    "act_2025_section": "11",
+    "confidence": "none",
+    "rationale": "The 2025 Act Section 11 is unrelated to the 1961 Act Section 4, as it deals with the treatment of balances in newly recognised provident funds rather than the conditions for recognition."
+   }
+  ]
+ },
+ "263": {
+  "act_1961_section": "263",
+  "in_degree": 15,
+  "candidates": [
+   {
+    "act_2025_section": "378",
+    "confidence": "strong",
+    "rationale": "Both sections 263 of the 1961 Act and section 378 of the 2025 Act allow the Competent Authority to revise orders passed by subordinate authorities, either on their own motion or on application by the assessee, and to pass orders as they think fit, subject to certain conditions."
+   },
+   {
+    "act_2025_section": "377",
+    "confidence": "strong",
+    "rationale": "Section 263 of the 1961 Act and section 377 of the 2025 Act both allow the Competent Authority to call for and examine the record of any proceeding under the Act, and to pass orders if they consider the original order to be erroneous and prejudicial to the revenue, after giving the assessee an opportunity to be heard."
+   },
+   {
+    "act_2025_section": "283",
+    "confidence": "none",
+    "rationale": "Section 283 of the 2025 Act appears to be related to the issuance of notices for assessment or reassessment, and does not seem to be a functional equivalent or successor provision to section 263 of the 1961 Act, which deals with the revision of orders passed by subordinate authorities."
+   }
+  ]
+ },
+ "43": {
+  "act_1961_section": "43",
+  "in_degree": 15,
+  "candidates": [
+   {
+    "act_2025_section": "39",
+    "confidence": "strong",
+    "rationale": "Section 39 of the 2025 Act closely matches the definition of 'actual cost' in Section 43 of the 1961 Act, including the reduction of cost by amounts such as depreciation and goods and services tax."
+   },
+   {
+    "act_2025_section": "41",
+    "confidence": "none",
+    "rationale": "Section 41 of the 2025 Act deals with the computation of written down value, which is a related but distinct concept from the definition of 'actual cost' in Section 43 of the 1961 Act."
+   },
+   {
+    "act_2025_section": "75",
+    "confidence": "none",
+    "rationale": "Section 75 of the 2025 Act provides a special provision for depreciation, but it does not address the definition of 'actual cost' or its computation, which is the focus of Section 43 of the 1961 Act."
+   }
+  ]
+ },
+ "11": {
+  "act_1961_section": "11",
+  "in_degree": 14,
+  "candidates": [
+   {
+    "act_2025_section": "11",
+    "confidence": "strong",
+    "rationale": "The 2025 Act Section 11 is a direct functional equivalent to the 1961 Act Section 11, with the same requirements for accounting and recognition of provident funds."
+   },
+   {
+    "act_2025_section": "191",
+    "confidence": "none",
+    "rationale": "The 2025 Act Section 191 deals with the taxation of provident fund balances, but it is not related to the accounting and recognition requirements specified in the 1961 Act Section 11."
+   },
+   {
+    "act_2025_section": "7",
+    "confidence": "none",
+    "rationale": "The 2025 Act Section 7 deals with the income deemed to be received in a tax year, including provident fund balances, but it is not related to the accounting and recognition requirements specified in the 1961 Act Section 11."
+   }
+  ]
+ },
+ "271": {
+  "act_1961_section": "271",
+  "in_degree": 14,
+  "candidates": [
+   {
+    "act_2025_section": "439",
+    "confidence": "partial",
+    "rationale": "Section 271 of the 1961 Act deals with penalty for failure to comply with notices, concealment of income, and furnishing inaccurate particulars, whereas Section 439 of the 2025 Act deals with penalty for under-reporting income, but both sections share a common theme of imposing penalties for non-compliance and inaccuracies in income reporting."
+   },
+   {
+    "act_2025_section": "443",
+    "confidence": "none",
+    "rationale": "Section 443 of the 2025 Act deals with penalty for failure to deduct tax at source, which is unrelated to the provisions of Section 271 of the 1961 Act."
+   },
+   {
+    "act_2025_section": "279",
+    "confidence": "none",
+    "rationale": "Section 279 of the 2025 Act deals with assessment of escaped income, which is unrelated to the provisions of Section 271 of the 1961 Act."
+   }
+  ]
+ },
+ "47": {
+  "act_1961_section": "47",
+  "in_degree": 14,
+  "candidates": [
+   {
+    "act_2025_section": "70",
+    "confidence": "strong",
+    "rationale": "Section 70 of the 2025 Act lists exemptions from capital gains tax, which is similar to Section 47 of the 1961 Act, which lists exemptions from capital gains tax."
+   },
+   {
+    "act_2025_section": "73",
+    "confidence": "none",
+    "rationale": "Section 73 of the 2025 Act deals with the cost of acquisition of capital assets, which is unrelated to the exemptions listed in Section 47 of the 1961 Act."
+   },
+   {
+    "act_2025_section": "71",
+    "confidence": "strong",
+    "rationale": "Section 71 of the 2025 Act deals with the chargeability of profits or gains arising from the transfer of capital assets, which is similar to the exemptions listed in Section 47 of the 1961 Act."
+   }
+  ]
+ },
+ "48": {
+  "act_1961_section": "48",
+  "in_degree": 14,
+  "candidates": [
+   {
+    "act_2025_section": "475",
+    "confidence": "none",
+    "rationale": "This section deals with fraudulent removal or concealment of property to prevent tax recovery, which is unrelated to the 1961 Act Section 48's attachment of immovable property of a defaulter."
+   },
+   {
+    "act_2025_section": "499",
+    "confidence": "strong",
+    "rationale": "This section voids any charge or transfer of assets by an assessee during tax proceedings, effectively prohibiting the transfer or charging of property, which is the same substantive rule as Section 48 of the 1961 Act."
+   },
+   {
+    "act_2025_section": "416",
+    "confidence": "none",
+    "rationale": "This section deals with tax recovery modes, including distraint and sale of movable property, which is unrelated to the 1961 Act Section 48's attachment of immovable property of a defaulter."
+   }
+  ]
+ },
+ "5": {
+  "act_1961_section": "5",
+  "in_degree": 14,
+  "candidates": [
+   {
+    "act_2025_section": "4",
+    "confidence": "strong",
+    "rationale": "Both sections deal with conditions for recognition of provident funds, with similar requirements for employee employment and contribution structures."
+   },
+   {
+    "act_2025_section": "29",
+    "confidence": "partial",
+    "rationale": "While section 29 deals with deductions for recognised provident funds, it does not cover the conditions for recognition as specified in section 5 of the 1961 Act."
+   },
+   {
+    "act_2025_section": "392",
+    "confidence": "none",
+    "rationale": "Section 392 deals with tax deductions at source for salaries and non-monetary perquisites, which is unrelated to the conditions for recognition of provident funds in section 5 of the 1961 Act."
+   }
+  ]
+ },
+ "250": {
+  "act_1961_section": "250",
+  "in_degree": 13,
+  "candidates": [
+   {
+    "act_2025_section": "359",
+    "confidence": "strong",
+    "rationale": "Both sections describe the process of fixing a day and place for the hearing of an appeal, giving notice to the appellant and the Assessing Officer, and outlining the parties who have the right to be heard."
+   },
+   {
+    "act_2025_section": "256",
+    "confidence": "none",
+    "rationale": "This section appears to be unrelated to the process of hearing appeals, as it discusses the powers of certain income-tax authorities in making enquiries."
+   },
+   {
+    "act_2025_section": "356",
+    "confidence": "none",
+    "rationale": "This section describes the process of appealing certain orders of an Assessing Officer, but it does not address the process of hearing appeals, which is the focus of the 1961 Act Section 250."
+   }
+  ]
+ },
+ "260": {
+  "act_1961_section": "260",
+  "in_degree": 13,
+  "candidates": [
+   {
+    "act_2025_section": "365",
+    "confidence": "strong",
+    "rationale": "Both sections deal with the appeal process to the High Court and the conditions under which an appeal can be filed."
+   },
+   {
+    "act_2025_section": "369",
+    "confidence": "none",
+    "rationale": "This section appears to be unrelated to the appeal process and instead deals with tax payment regardless of an appeal."
+   },
+   {
+    "act_2025_section": "363",
+    "confidence": "partial",
+    "rationale": "While this section deals with the Appellate Tribunal's powers, it does not specifically address the appeal process to the High Court, which is the main focus of Section 260 of the 1961 Act."
+   }
+  ]
+ },
+ "10AA": {
+  "act_1961_section": "10AA",
+  "in_degree": 12,
+  "candidates": [
+   {
+    "act_2025_section": "144",
+    "confidence": "strong",
+    "rationale": "Section 144 of the 2025 Act directly corresponds to Section 10AA of the 1961 Act, with similar provisions for deductions in respect of newly established Units in Special Economic Zones."
+   },
+   {
+    "act_2025_section": "143",
+    "confidence": "none",
+    "rationale": "Section 143 of the 2025 Act does not correspond to Section 10AA of the 1961 Act, as it provides a different set of conditions and a different deduction period for eligible businesses."
+   },
+   {
+    "act_2025_section": "140",
+    "confidence": "none",
+    "rationale": "Section 140 of the 2025 Act does not correspond to Section 10AA of the 1961 Act, as it provides a different set of conditions and a different deduction period for eligible start-ups and businesses."
+   }
+  ]
+ },
+ "115WD": {
+  "act_1961_section": "115WD",
+  "in_degree": 12,
+  "candidates": [
+   {
+    "act_2025_section": "263",
+    "confidence": "strong",
+    "rationale": "Both sections require employers to furnish a return of fringe benefits or income to the Assessing Officer within a specified due date, and both sections provide for penalties for failure to do so."
+   },
+   {
+    "act_2025_section": "427",
+    "confidence": "none",
+    "rationale": "This section deals with a fee for default in furnishing statements, which is not the same as the requirement to furnish a return of fringe benefits or income."
+   },
+   {
+    "act_2025_section": "461",
+    "confidence": "strong",
+    "rationale": "This section deals with penalties for failure to furnish statements or furnishing incorrect information, which is related to the requirement to furnish a return of fringe benefits or income in section 115WD of the 1961 Act."
+   }
+  ]
+ },
+ "206C": {
+  "act_1961_section": "206C",
+  "in_degree": 12,
+  "candidates": [
+   {
+    "act_2025_section": "398",
+    "confidence": "partial",
+    "rationale": "While 2025 Act Section 398 deals with consequences of default in tax deduction or collection, it does not specifically address the collection of tax at source like 1961 Act Section 206C."
+   },
+   {
+    "act_2025_section": "394",
+    "confidence": "strong",
+    "rationale": "2025 Act Section 394 is a functional equivalent of 1961 Act Section 206C, as it deals with the collection of tax at source on specified receipts, at the specified rate, and at the time of debiting or receipt of amount."
+   },
+   {
+    "act_2025_section": "397",
+    "confidence": "none",
+    "rationale": "2025 Act Section 397 deals with tax deduction and collection account numbers, which is unrelated to the collection of tax at source as specified in 1961 Act Section 206C."
+   }
+  ]
+ },
+ "262": {
+  "act_1961_section": "262",
+  "in_degree": 12,
+  "candidates": [
+   {
+    "act_2025_section": "368",
+    "confidence": "strong",
+    "rationale": "The 2025 Act section 368 is a nearly identical rewording of the 1961 Act section 262, with only minor changes in wording and reference to section numbers."
+   },
+   {
+    "act_2025_section": "367",
+    "confidence": "none",
+    "rationale": "The 2025 Act section 367 is unrelated to the 1961 Act section 262, as it deals with the conditions for filing an appeal to the Supreme Court, whereas section 262 deals with the application of the Code of Civil Procedure to appeals under section 261."
+   },
+   {
+    "act_2025_section": "366",
+    "confidence": "none",
+    "rationale": "The 2025 Act section 366 is unrelated to the 1961 Act section 262, as it deals with the composition of benches in the High Court, whereas section 262 deals with the application of the Code of Civil Procedure to appeals under section 261."
+   }
+  ]
+ },
+ "88": {
+  "act_1961_section": "88",
+  "in_degree": 12,
+  "candidates": [
+   {
+    "act_2025_section": "123",
+    "confidence": "strong",
+    "rationale": "Both sections provide a deduction for individuals and Hindu undivided families, with similar conditions and limits."
+   },
+   {
+    "act_2025_section": "126",
+    "confidence": "none",
+    "rationale": "Section 126 deals with health insurance payments, which is unrelated to the deduction for individuals and Hindu undivided families in Section 88 of the 1961 Act."
+   },
+   {
+    "act_2025_section": "2",
+    "confidence": "none",
+    "rationale": "Section 2 is a glossary section that defines various terms, but it does not cover the same subject matter as Section 88 of the 1961 Act."
+   }
+  ]
+ },
+ "115": {
+  "act_1961_section": "115",
+  "in_degree": 11,
+  "candidates": [
+   {
+    "act_2025_section": "193",
+    "confidence": "none",
+    "rationale": "Section 193 of the 2025 Act deals with tax on income from Global Depository Receipts, which is not related to the 1961 Act Section 115A."
+   },
+   {
+    "act_2025_section": "209",
+    "confidence": "partial",
+    "rationale": "Section 209 of the 2025 Act deals with tax on income from bonds or Global Depository Receipts, but it only covers a specific type of income and does not cover the broader scope of Section 115A of the 1961 Act."
+   },
+   {
+    "act_2025_section": "207",
+    "confidence": "strong",
+    "rationale": "Section 207 of the 2025 Act deals with tax on income from dividends, royalty, and fees for technical services, which is similar to the scope of Section 115A of the 1961 Act."
+   }
+  ]
+ },
+ "131": {
+  "act_1961_section": "131",
+  "in_degree": 11,
+  "candidates": [
+   {
+    "act_2025_section": "247",
+    "confidence": "strong",
+    "rationale": "Both sections deal with the powers of the Assessing Officer and other authorities to conduct searches and seizures, and have similar provisions for discovery, inspection, and enforcement of attendance."
+   },
+   {
+    "act_2025_section": "246",
+    "confidence": "strong",
+    "rationale": "Both sections grant similar powers to the Assessing Officer and other authorities, including discovery and inspection, and enforcing attendance, mirroring the 1961 Act's Section 131."
+   },
+   {
+    "act_2025_section": "253",
+    "confidence": "none",
+    "rationale": "This section deals with the power of an income-tax authority to enter a place for inspection, but it does not have the same scope or provisions as Section 131 of the 1961 Act."
+   }
+  ]
+ },
+ "158BC": {
+  "act_1961_section": "158BC",
+  "in_degree": 11,
+  "candidates": [
+   {
+    "act_2025_section": "294",
+    "confidence": "strong",
+    "rationale": "Both sections deal with the procedure to be followed after a search has been initiated or requisition made, and require the person to furnish a return within a specified time period."
+   },
+   {
+    "act_2025_section": "296",
+    "confidence": "none",
+    "rationale": "This section deals with the time limit for passing an order under section 294, which is unrelated to the content of section 158BC of the 1961 Act."
+   },
+   {
+    "act_2025_section": "293",
+    "confidence": "none",
+    "rationale": "This section deals with the computation of total undisclosed income of the block period, which is a different concept from the procedure to be followed after a search has been initiated or requisition made, as dealt with in section 158BC of the 1961 Act."
+   }
+  ]
+ },
+ "33B": {
+  "act_1961_section": "33B",
+  "in_degree": 11,
+  "candidates": [
+   {
+    "act_2025_section": "140",
+    "confidence": "none",
+    "rationale": "The 2025 Act Section 140 is about start-up businesses and allows a deduction of 100% of profits and gains for three consecutive tax years, which is unrelated to the 1961 Act Section 33B."
+   },
+   {
+    "act_2025_section": "138",
+    "confidence": "none",
+    "rationale": "The 2025 Act Section 138 is about deductions for profits and gains from certain businesses, but it does not relate to the specific scenario of an industrial undertaking being discontinued due to extensive damage or destruction."
+   },
+   {
+    "act_2025_section": "33",
+    "confidence": "strong",
+    "rationale": "The 2025 Act Section 33 is about depreciation of tangible and intangible assets, which is similar to the 1961 Act Section 33B, which allows a deduction for depreciation of assets used for business purposes."
+   }
+  ]
+ },
+ "6": {
+  "act_1961_section": "6",
+  "in_degree": 11,
+  "candidates": [
+   {
+    "act_2025_section": "6",
+    "confidence": "strong",
+    "rationale": "Both sections deal with the residential status of individuals and companies in India, with similar conditions for residency."
+   },
+   {
+    "act_2025_section": "9",
+    "confidence": "none",
+    "rationale": "Section 9 of the 2025 Act deals with the deemed accrual or arising of income in India, which is unrelated to the residential status in Section 6 of the 1961 Act."
+   },
+   {
+    "act_2025_section": "2",
+    "confidence": "none",
+    "rationale": "Section 2 of the 2025 Act is a glossary section that defines various terms, but it does not deal with residential status or income accrual, making it unrelated to Section 6 of the 1961 Act."
+   }
+  ]
+ },
+ "74": {
+  "act_1961_section": "74",
+  "in_degree": 11,
+  "candidates": [
+   {
+    "act_2025_section": "111",
+    "confidence": "strong",
+    "rationale": "Both sections deal with carrying forward and setting off losses under the head 'Capital gains' and follow a similar structure."
+   },
+   {
+    "act_2025_section": "108",
+    "confidence": "partial",
+    "rationale": "Section 108 deals with setting off losses under the same head of income, but it does not specifically address carrying forward losses under the head 'Capital gains'."
+   },
+   {
+    "act_2025_section": "112",
+    "confidence": "none",
+    "rationale": "Section 112 deals with carrying forward and setting off losses under the head 'Profits and gains of business or profession', which is unrelated to the subject matter of Section 74 of the 1961 Act."
+   }
+  ]
+ },
+ "156": {
+  "act_1961_section": "156",
+  "in_degree": 10,
+  "candidates": [
+   {
+    "act_2025_section": "289",
+    "confidence": "strong",
+    "rationale": "Both sections 156 and 289 of the 1961 and 2025 Acts respectively deal with the service of a notice of demand for tax, interest, penalty, fine, or other sums payable in consequence of an order passed under the Act."
+   },
+   {
+    "act_2025_section": "290",
+    "confidence": "none",
+    "rationale": "Section 290 of the 2025 Act deals with the modification of a notice of demand, which is a related but distinct concept from the service of a notice of demand as described in section 156 of the 1961 Act."
+   },
+   {
+    "act_2025_section": "448",
+    "confidence": "none",
+    "rationale": "Section 448 of the 2025 Act deals with the penalty for failure to deduct tax at source, which is unrelated to the service of a notice of demand as described in section 156 of the 1961 Act."
+   }
+  ]
+ },
+ "17": {
+  "act_1961_section": "17",
+  "in_degree": 10,
+  "candidates": [
+   {
+    "act_2025_section": "17",
+    "confidence": "strong",
+    "rationale": "The 2025 Act Section 17 is a clear functional equivalent of the 1961 Act Section 17, covering the same definitions of 'salary' and 'perquisite' with some minor rewording."
+   },
+   {
+    "act_2025_section": "16",
+    "confidence": "none",
+    "rationale": "The 2025 Act Section 16 is not a functional equivalent of the 1961 Act Section 17, as it only covers the definition of 'salary' and lacks the comprehensive list of inclusions for 'perquisite'."
+   },
+   {
+    "act_2025_section": "18",
+    "confidence": "none",
+    "rationale": "The 2025 Act Section 18 is not related to the 1961 Act Section 17, as it covers the definition of 'profits in lieu of salary', which is a distinct concept."
+   }
+  ]
+ },
+ "91": {
+  "act_1961_section": "91",
+  "in_degree": 10,
+  "candidates": [
+   {
+    "act_2025_section": "160",
+    "confidence": "strong",
+    "rationale": "Candidate 0 is a direct functional equivalent of Section 91 of the 1961 Act, with minor rewording and renumbering."
+   },
+   {
+    "act_2025_section": "396",
+    "confidence": "none",
+    "rationale": "Candidate 1 is unrelated to Section 91 of the 1961 Act, as it deals with sums deemed as income received for computing the income of an assessee."
+   },
+   {
+    "act_2025_section": "190",
+    "confidence": "none",
+    "rationale": "Candidate 2 is unrelated to Section 91 of the 1961 Act, as it deals with a deduction from income-tax where no income-tax is payable under the provisions of the Act."
+   }
+  ]
+ }
+}

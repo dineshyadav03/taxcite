@@ -1,4 +1,5 @@
-"""Registry of the ten RAG patterns.
+"""Registry of the ten standard RAG patterns plus three original ones
+(jury, correspondence, precedent) built on the same substrate.
 
 Every pattern is a callable answer(question, session_id=None) returning:
     {
@@ -8,19 +9,22 @@ Every pattern is a callable answer(question, session_id=None) returning:
       "trace":   {pattern-specific record of what actually happened},
       "pattern": str,
     }
-The trace is the point: a ten-pattern system is only reviewable if each
-pattern exposes *what it did* (sub-questions asked, chunks rejected,
-graph hops taken), not just its final answer.
+The trace is the point: a thirteen-pattern system is only reviewable if
+each pattern exposes *what it did* (sub-questions asked, chunks
+rejected, graph hops taken), not just its final answer.
 """
 from patterns import (
     adaptive,
     agentic,
     branched,
+    correspondence,
     corrective,
     graph_rag,
     hyde,
+    jury,
     memory_rag,
     multimodal,
+    precedent,
     self_rag,
     simple,
 )
@@ -36,6 +40,9 @@ PATTERNS = {
     "agentic": agentic.answer,
     "multimodal": multimodal.answer,
     "graph": graph_rag.answer,
+    "jury": jury.answer,
+    "correspondence": correspondence.answer,
+    "precedent": precedent.answer,
 }
 
 PATTERN_INFO = {
@@ -49,6 +56,9 @@ PATTERN_INFO = {
     "agentic": "LLM drives a tool loop: search / fetch-section / follow-references / answer.",
     "multimodal": "Searches prose sections AND the structured-table index (rate schedules etc.).",
     "graph": "Expands retrieval one hop along real statutory cross-references (3,683 edges).",
+    "jury": "Runs simple/corrective/graph as an ensemble; reports consensus or explicit disagreement.",
+    "correspondence": "Maps a 1961-Act section to its verified 2025-Act functional equivalent.",
+    "precedent": "Attaches real, verified Supreme Court case law to the retrieved statute section.",
 }
 
 

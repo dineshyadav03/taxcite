@@ -60,10 +60,16 @@ def _get_groq():
     return _groq_client
 
 
-def llm(user_prompt, system_prompt=SYSTEM_PROMPT, json_mode=False, max_tokens=None, temperature=0):
+def llm(user_prompt, system_prompt=SYSTEM_PROMPT, json_mode=False, max_tokens=None, temperature=0, model=None):
     """Single LLM call with retry-with-backoff. When json_mode=True, asks
     Groq for a JSON object response and parses it (returns a dict/list, or
-    raises ValueError if parsing fails after a salvage attempt)."""
+    raises ValueError if parsing fails after a salvage attempt). model
+    overrides GROQ_MODEL for this call only - used sparingly (e.g. the
+    Correspondence RAG build script upgrades to llama-3.3-70b-versatile
+    for its verification calls, since that judgment is more nuanced than
+    the everyday 8B model reliably gets right - verified live: the 8B
+    model kept mislabeling "one exemption among fifty" as a "strong"
+    match to the whole exemptions section)."""
     max_tokens = max_tokens or OLLAMA_NUM_PREDICT
     if GROQ_API_KEY:
         from groq import BadRequestError, RateLimitError
@@ -75,7 +81,7 @@ def llm(user_prompt, system_prompt=SYSTEM_PROMPT, json_mode=False, max_tokens=No
         for attempt in range(GROQ_MAX_RETRIES):
             try:
                 response = client.chat.completions.create(
-                    model=GROQ_MODEL,
+                    model=model or GROQ_MODEL,
                     messages=[
                         {"role": "system", "content": system_prompt},
                         {"role": "user", "content": user_prompt},

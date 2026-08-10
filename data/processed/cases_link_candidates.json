@@ -1,0 +1,542 @@
+[
+ {
+  "case_name": "CIT v. Raja Benoy Kumar Sahs Roy",
+  "candidates": [
+   {
+    "act_id": "itact1961",
+    "section": "2",
+    "distance": 0.8591707944869995
+   },
+   {
+    "act_id": "itact1961",
+    "section": "2",
+    "distance": 1.0458208322525024
+   },
+   {
+    "act_id": "itact1961",
+    "section": "80P",
+    "distance": 1.0728213787078857
+   },
+   {
+    "act_id": "itact1961",
+    "section": "33A",
+    "distance": 1.1020359992980957
+   },
+   {
+    "act_id": "itact1961",
+    "section": "9",
+    "distance": 1.1123814582824707
+   }
+  ]
+ },
+ {
+  "case_name": "Singhai Rakesh Kumar v. UOI",
+  "candidates": [
+   {
+    "act_id": "itact1961",
+    "section": "2",
+    "distance": 0.834611713886261
+   },
+   {
+    "act_id": "itact1961",
+    "section": "2",
+    "distance": 0.9073075652122498
+   },
+   {
+    "act_id": "itact1961",
+    "section": "10",
+    "distance": 0.982082724571228
+   },
+   {
+    "act_id": "itact1961",
+    "section": "54A",
+    "distance": 1.0064283609390259
+   },
+   {
+    "act_id": "itact1961",
+    "section": "2",
+    "distance": 1.0097622871398926
+   }
+  ]
+ },
+ {
+  "case_name": "Gowli Buddanna v. CIT",
+  "candidates": [
+   {
+    "act_id": "itact2025",
+    "section": "99",
+    "distance": 1.184217929840088
+   },
+   {
+    "act_id": "itact2025",
+    "section": "315",
+    "distance": 1.214834213256836
+   },
+   {
+    "act_id": "itact1961",
+    "section": "171",
+    "distance": 1.2158464193344116
+   },
+   {
+    "act_id": "itact1961",
+    "section": "64",
+    "distance": 1.2353838682174683
+   },
+   {
+    "act_id": "itact2025",
+    "section": "315",
+    "distance": 1.2411344051361084
+   }
+  ]
+ },
+ {
+  "case_name": "CIT v. Indira Balkrishna",
+  "candidates": [
+   {
+    "act_id": "itact2025",
+    "section": "25",
+    "distance": 0.9679025411605835
+   },
+   {
+    "act_id": "itact2025",
+    "section": "24",
+    "distance": 0.9692119359970093
+   },
+   {
+    "act_id": "itact1961",
+    "section": "174",
+    "distance": 0.9703196883201599
+   },
+   {
+    "act_id": "itact2025",
+    "section": "309",
+    "distance": 1.0010203123092651
+   },
+   {
+    "act_id": "itact2025",
+    "section": "310",
+    "distance": 1.034487247467041
+   }
+  ]
+ },
+ {
+  "case_name": "K.D. Kamath and Co. v. CIT",
+  "candidates": [
+   {
+    "act_id": "itact2025",
+    "section": "325",
+    "distance": 1.0591001510620117
+   },
+   {
+    "act_id": "itact1961",
+    "section": "184",
+    "distance": 1.0810177326202393
+   },
+   {
+    "act_id": "itact2025",
+    "section": "8",
+    "distance": 1.0946460962295532
+   },
+   {
+    "act_id": "itact2025",
+    "section": "35",
+    "distance": 1.1353189945220947
+   },
+   {
+    "act_id": "itact1961",
+    "section": "158",
+    "distance": 1.1546716690063477
+   }
+  ]
+ },
+ {
+  "case_name": "Vodafone International Holdings v. UOI",
+  "candidates": [
+   {
+    "act_id": "itact1961",
+    "section": "47",
+    "distance": 1.1219593286514282
+   },
+   {
+    "act_id": "itact2025",
+    "section": "180",
+    "distance": 1.1346677541732788
+   },
+   {
+    "act_id": "itact2025",
+    "section": "174",
+    "distance": 1.1481435298919678
+   },
+   {
+    "act_id": "itact1961",
+    "section": "97",
+    "distance": 1.1508121490478516
+   },
+   {
+    "act_id": "itact1961",
+    "section": "47",
+    "distance": 1.1565423011779785
+   }
+  ]
+ },
+ {
+  "case_name": "CIT v. Durga Prasad More",
+  "candidates": [
+   {
+    "act_id": "itact1961",
+    "section": "69B",
+    "distance": 1.3329848051071167
+   },
+   {
+    "act_id": "itact2025",
+    "section": "103",
+    "distance": 1.3361365795135498
+   },
+   {
+    "act_id": "itact2025",
+    "section": "102",
+    "distance": 1.4103220701217651
+   },
+   {
+    "act_id": "itact1961",
+    "section": "13",
+    "distance": 1.4245431423187256
+   },
+   {
+    "act_id": "itact2025",
+    "section": "180",
+    "distance": 1.4286701679229736
+   }
+  ]
+ },
+ {
+  "case_name": "Sumati Dayal v. CIT",
+  "candidates": [
+   {
+    "act_id": "itact1961",
+    "section": "69A",
+    "distance": 1.2410082817077637
+   },
+   {
+    "act_id": "itact2025",
+    "section": "104",
+    "distance": 1.2577574253082275
+   },
+   {
+    "act_id": "itact1961",
+    "section": "69B",
+    "distance": 1.2653833627700806
+   },
+   {
+    "act_id": "itact1961",
+    "section": "271AAA",
+    "distance": 1.2848334312438965
+   },
+   {
+    "act_id": "itact1961",
+    "section": "271",
+    "distance": 1.3077131509780884
+   }
+  ]
+ },
+ {
+  "case_name": "T.R.F Ltd v. CIT",
+  "candidates": [
+   {
+    "act_id": "itact2025",
+    "section": "31",
+    "distance": 0.6525989770889282
+   },
+   {
+    "act_id": "itact1961",
+    "section": "36",
+    "distance": 0.710564136505127
+   },
+   {
+    "act_id": "itact1961",
+    "section": "36",
+    "distance": 0.7224323749542236
+   },
+   {
+    "act_id": "itact2025",
+    "section": "31",
+    "distance": 0.8055782318115234
+   },
+   {
+    "act_id": "itact1961",
+    "section": "41",
+    "distance": 0.9167294502258301
+   }
+  ]
+ },
+ {
+  "case_name": "Empire Jute Co. Ltd v. CIT",
+  "candidates": [
+   {
+    "act_id": "itact2025",
+    "section": "32",
+    "distance": 1.2732064723968506
+   },
+   {
+    "act_id": "itact2025",
+    "section": "52",
+    "distance": 1.3074216842651367
+   },
+   {
+    "act_id": "itact2025",
+    "section": "46",
+    "distance": 1.331552267074585
+   },
+   {
+    "act_id": "itact2025",
+    "section": "34",
+    "distance": 1.3480310440063477
+   },
+   {
+    "act_id": "itact1961",
+    "section": "37",
+    "distance": 1.3508875370025635
+   }
+  ]
+ },
+ {
+  "case_name": "Bharat Earth Movers v. CIT",
+  "candidates": [
+   {
+    "act_id": "itact1961",
+    "section": "43B",
+    "distance": 1.1457483768463135
+   },
+   {
+    "act_id": "itact1961",
+    "section": "192",
+    "distance": 1.1588252782821655
+   },
+   {
+    "act_id": "itact1961",
+    "section": "43B",
+    "distance": 1.1721079349517822
+   },
+   {
+    "act_id": "itact2025",
+    "section": "37",
+    "distance": 1.1734365224838257
+   },
+   {
+    "act_id": "itact2025",
+    "section": "392",
+    "distance": 1.1997005939483643
+   }
+  ]
+ },
+ {
+  "case_name": "CIT v. Alps Theatre",
+  "candidates": [
+   {
+    "act_id": "itact2025",
+    "section": "33",
+    "distance": 1.068477749824524
+   },
+   {
+    "act_id": "itact1961",
+    "section": "32",
+    "distance": 1.0982524156570435
+   },
+   {
+    "act_id": "itact2025",
+    "section": "33",
+    "distance": 1.1068357229232788
+   },
+   {
+    "act_id": "itact2025",
+    "section": "39",
+    "distance": 1.1517763137817383
+   },
+   {
+    "act_id": "itact2025",
+    "section": "75",
+    "distance": 1.163135051727295
+   }
+  ]
+ },
+ {
+  "case_name": "S. A. Builders Ltd. v. CIT",
+  "candidates": [
+   {
+    "act_id": "itact1961",
+    "section": "94",
+    "distance": 1.0367271900177002
+   },
+   {
+    "act_id": "itact1961",
+    "section": "43B",
+    "distance": 1.0368175506591797
+   },
+   {
+    "act_id": "itact1961",
+    "section": "43B",
+    "distance": 1.0388245582580566
+   },
+   {
+    "act_id": "itact2025",
+    "section": "177",
+    "distance": 1.0588791370391846
+   },
+   {
+    "act_id": "itact2025",
+    "section": "37",
+    "distance": 1.1032443046569824
+   }
+  ]
+ },
+ {
+  "case_name": "CIT v. Excel Industries Ltd",
+  "candidates": [
+   {
+    "act_id": "itact1961",
+    "section": "189A",
+    "distance": 1.0716800689697266
+   },
+   {
+    "act_id": "itact1961",
+    "section": "145B",
+    "distance": 1.2021461725234985
+   },
+   {
+    "act_id": "itact2025",
+    "section": "278",
+    "distance": 1.2104722261428833
+   },
+   {
+    "act_id": "itact1961",
+    "section": "10AA",
+    "distance": 1.219831109046936
+   },
+   {
+    "act_id": "itact1961",
+    "section": "80-I",
+    "distance": 1.2278897762298584
+   }
+  ]
+ },
+ {
+  "case_name": "Apollo Tyres Ltd v. CIT",
+  "candidates": [
+   {
+    "act_id": "itact2025",
+    "section": "206",
+    "distance": 0.9431678652763367
+   },
+   {
+    "act_id": "itact2025",
+    "section": "58",
+    "distance": 0.9595617055892944
+   },
+   {
+    "act_id": "itact2025",
+    "section": "206",
+    "distance": 0.9729177951812744
+   },
+   {
+    "act_id": "itact1961",
+    "section": "80-I",
+    "distance": 1.0051908493041992
+   },
+   {
+    "act_id": "itact1961",
+    "section": "115J",
+    "distance": 1.0528161525726318
+   }
+  ]
+ },
+ {
+  "case_name": "Hindustan Steel Ltd. v. State of Orissa",
+  "candidates": [
+   {
+    "act_id": "itact2025",
+    "section": "473",
+    "distance": 1.2453303337097168
+   },
+   {
+    "act_id": "itact1961",
+    "section": "278AA",
+    "distance": 1.2610331773757935
+   },
+   {
+    "act_id": "itact1961",
+    "section": "273B",
+    "distance": 1.2833447456359863
+   },
+   {
+    "act_id": "itact2025",
+    "section": "439",
+    "distance": 1.3086364269256592
+   },
+   {
+    "act_id": "itact1961",
+    "section": "273A",
+    "distance": 1.3111448287963867
+   }
+  ]
+ },
+ {
+  "case_name": "CIT v. Reliance Petroproducts Pvt Ltd.",
+  "candidates": [
+   {
+    "act_id": "itact1961",
+    "section": "273A",
+    "distance": 0.9559749960899353
+   },
+   {
+    "act_id": "itact1961",
+    "section": "271",
+    "distance": 0.9704722166061401
+   },
+   {
+    "act_id": "itact1961",
+    "section": "271",
+    "distance": 0.9736816883087158
+   },
+   {
+    "act_id": "itact1961",
+    "section": "271",
+    "distance": 0.9880468845367432
+   },
+   {
+    "act_id": "itact1961",
+    "section": "271AAB",
+    "distance": 1.0346999168395996
+   }
+  ]
+ },
+ {
+  "case_name": "CIT v. Vegetable Products Ltd.",
+  "candidates": [
+   {
+    "act_id": "itact1961",
+    "section": "294",
+    "distance": 1.1481565237045288
+   },
+   {
+    "act_id": "itact2025",
+    "section": "530",
+    "distance": 1.1779035329818726
+   },
+   {
+    "act_id": "itact2025",
+    "section": "167",
+    "distance": 1.181592583656311
+   },
+   {
+    "act_id": "itact1961",
+    "section": "100",
+    "distance": 1.2009931802749634
+   },
+   {
+    "act_id": "itact2025",
+    "section": "183",
+    "distance": 1.2032341957092285
+   }
+  ]
+ }
+]

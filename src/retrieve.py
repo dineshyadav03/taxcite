@@ -48,6 +48,10 @@ def get_table_collection(persist_dir=None):
     return _get("income_tax_tables", persist_dir)
 
 
+def get_cases_collection(persist_dir=None):
+    return _get("income_tax_cases", persist_dir)
+
+
 def embed_query(query):
     """One Voyage call for a query embedding, reusable across collections.
     Patterns that search multiple collections (multi-modal) or reuse an

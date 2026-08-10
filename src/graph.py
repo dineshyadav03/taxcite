@@ -20,6 +20,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 GRAPH_PATH = ROOT / "data" / "processed" / "xref_graph.json"
+CASE_GRAPH_PATH = ROOT / "data" / "processed" / "case_graph.json"
 
 # "section 139", "sections 82,83,84", "section 515(3)(b)" - capture the
 # bare section identifier (digits + optional letter suffix), ignore the
@@ -95,6 +96,20 @@ def referenced_by(act_id, section):
         for key, refs in get_graph().items()
         if key.startswith(prefix) and section in refs
     )
+
+
+_case_graph = None
+
+
+def cases_for(act_id, section):
+    """Case names manually linked to (act_id, section) - see
+    scripts/build_cases.py for how these links were verified. Kept in a
+    separate file from xref_graph.json since cases aren't sections and
+    have no outgoing statutory references of their own."""
+    global _case_graph
+    if _case_graph is None:
+        _case_graph = json.loads(CASE_GRAPH_PATH.read_text(encoding="utf-8")) if CASE_GRAPH_PATH.exists() else {}
+    return _case_graph.get(f"{act_id}::{section}", [])
 
 
 if __name__ == "__main__":

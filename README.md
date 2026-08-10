@@ -1,6 +1,6 @@
 # TaxCite
 
-A citation-grounded retrieval-augmented generation (RAG) system over Indian income tax law. Every answer traces back to an exact Act, chapter, and section of the Income-tax Act, 2025 or the superseded Income-tax Act, 1961 — and the system implements all ten commonly-cited RAG architectural patterns as selectable, independently verifiable pipelines over the same corpus, rather than picking one and stopping.
+A citation-grounded retrieval-augmented generation (RAG) system over Indian income tax law. Every answer traces back to an exact Act, chapter, and section of the Income-tax Act, 2025 or the superseded Income-tax Act, 1961 — and the system implements all ten commonly-cited RAG architectural patterns, plus three original patterns built on the same substrate, as selectable, independently verifiable pipelines over the same corpus, rather than picking one and stopping.
 
 ## Contents
 
@@ -13,14 +13,15 @@ A citation-grounded retrieval-augmented generation (RAG) system over Indian inco
 7. [Vector store](#vector-store)
 8. [Retrieval mechanics](#retrieval-mechanics)
 9. [The ten RAG patterns](#the-ten-rag-patterns)
-10. [Evaluation](#evaluation)
-11. [Bugs found and fixed during verification](#bugs-found-and-fixed-during-verification)
-12. [Known limitations](#known-limitations)
-13. [Interface](#interface)
-14. [Running it](#running-it)
-15. [Cost and infrastructure](#cost-and-infrastructure)
-16. [What this project is trying to demonstrate](#what-this-project-is-trying-to-demonstrate)
-17. [Planned work](#planned-work)
+10. [Three inventions beyond the standard list](#three-inventions-beyond-the-standard-list)
+11. [Evaluation](#evaluation)
+12. [Bugs found and fixed during verification](#bugs-found-and-fixed-during-verification)
+13. [Known limitations](#known-limitations)
+14. [Interface](#interface)
+15. [Running it](#running-it)
+16. [Cost and infrastructure](#cost-and-infrastructure)
+17. [What this project is trying to demonstrate](#what-this-project-is-trying-to-demonstrate)
+18. [Planned work](#planned-work)
 
 ## Why this project exists
 
@@ -54,7 +55,7 @@ The 1961 Act source is worth a specific note, because it contradicted its own fi
 
 *Gray boxes are local compute or storage; blue boxes are hosted API calls; tan boxes are local-compute analysis with no API cost.*
 
-Every one of the ten pattern modules in `src/patterns/` is built on the same four-piece substrate: an exact-match section lookup, a Voyage AI vector search, a table-modality vector search, and a cross-reference graph traversal. The patterns differ only in *how* they call into that substrate — how many times, in what order, with what intermediate reasoning. This is a deliberate design choice: building ten independent retrieval systems would multiply the surface area for extraction and indexing bugs by ten; building one substrate and ten call patterns on top of it means a fix to retrieval (see the Act-starvation bug below) benefits every pattern simultaneously, and was in fact discovered through exactly that shared-code path.
+Every one of the standard ten pattern modules in `src/patterns/` is built on the same four-piece substrate: an exact-match section lookup, a Voyage AI vector search, a table-modality vector search, and a cross-reference graph traversal. The patterns differ only in *how* they call into that substrate — how many times, in what order, with what intermediate reasoning. This is a deliberate design choice: building ten independent retrieval systems would multiply the surface area for extraction and indexing bugs by ten; building one substrate and ten call patterns on top of it means a fix to retrieval (see the Act-starvation bug below) benefits every pattern simultaneously, and was in fact discovered through exactly that shared-code path. The three additional patterns beyond the standard list ([below](#three-inventions-beyond-the-standard-list)) reuse this same substrate rather than adding a second one — Jury RAG calls three existing patterns directly, and Correspondence and Precedent RAG reuse `retrieve.fetch_section`, `graph.py`, and `generate.llm`/`build_user_prompt` exactly as the standard ten do.
 
 ## Extraction: from PDF to structured section
 
@@ -165,9 +166,31 @@ Statutory text is naturally a graph. Section 139 does not exist in isolation —
 
 The Graph pattern uses this by taking the top retrieval hits for a query, following each one's outgoing references one hop, and pulling the first chunk of each referenced section into the generation context alongside the seed hits. One hop only, by design: a statute's reference closure is dense enough that a second hop would pull a large fraction of the surrounding Act into context for a single question, which stops being retrieval and starts being "attach most of the corpus."
 
+## Three inventions beyond the standard list
+
+The ten patterns above are a commonly cited list; implementing all ten is thoroughness, not invention. Three further patterns were built specifically because they are not on that list, do not exist elsewhere in the system, and were each chosen because this project's own premise — a statute that was wholesale renumbered, not just re-dated — makes them genuinely useful rather than decorative additions.
+
+| Pattern | Mechanism | Module |
+|---|---|---|
+| Jury | Runs Simple, Corrective, and Graph RAG on the same question and votes on which `(act, section)` each one's top result lands on. 2-or-3-of-3 agreement is reported as consensus; anything less is reported as explicit disagreement, not silently resolved. | `patterns/jury.py` |
+| Correspondence | Answers "what's the 2025-Act equivalent of this 1961-Act section" — a real question the renumbering makes hard, that nothing else in the system answers. Backed by an offline-built map of the ~50 most-cited 1961 sections to their verified 2025 equivalents. | `patterns/correspondence.py`, `scripts/build_correspondence.py` |
+| Precedent | Attaches real, sourced Supreme Court case law to a retrieved statute section, when one is linked. | `patterns/precedent.py`, `scripts/build_cases.py` |
+
+**Jury RAG** treats agreement between independently-reasoning patterns as a real confidence signal instead of each pattern silently committing to one answer with no way to express uncertainty. It runs sequentially, not in parallel — Voyage's free tier is 3 requests/minute, so three concurrent embedding calls would just be rate-limit-queued anyway, and sequential execution costs nothing extra in wall clock. Verified live against three real scenarios: unanimous 3/3 consensus (an exact section-number query, and a capital-gains query landing all three jurors on Section 45), a genuine 2/3 split (an insurance-payout query where Corrective's re-grading diverged from Simple and Graph's shared top hit), and a full 3/3 refusal (a rate-table question none of the three text-only jurors could answer, since rate schedules live in a separate table modality). True 3-way disagreement turns out to be structurally rare by this design: Simple and Graph both derive their vote from the identical un-graded `search()` call, so only Corrective's independent grading-and-retry path can actually diverge from the other two.
+
+**Correspondence RAG** is backed by `data/processed/correspondence_map.json`, built offline in three steps that keep the expensive part (LLM verification) cheap: (1) the ~50 most-cited 1961-Act sections by in-degree in the existing cross-reference graph — a data-driven proxy for "foundational provision" rather than guessing section numbers a general-purpose model might recall wrong given the renumbering; (2) 2025-Act candidates generated with **zero new embedding calls** — every chunk of a section's already-computed vectors is mean-pooled into one representative vector and used to query the `itact2025`-filtered collection, reusing vectors already paid for during the original index build; (3) one Groq call per section verifying whether each top-3 candidate functionally corresponds, with a confidence label and rationale. Every answer carries a fixed disclaimer: this is an LLM-verified functional mapping, not an official concordance table.
+
+Step (2)'s mean-pooling was not the first version — it was a fix for a real bug caught during manual verification (this project's verification standard applies to the new patterns too, not only the original ten). The first build embedded only a section's *first* chunk to generate candidates and truncated its text to 1,200 characters for verification. For an ordinary, narrowly-scoped section this is fine; for one of the ~25 of 50 top-cited sections that are large omnibus sections — Section 2's 37-chunk general-definitions clause, Section 10's 73-chunk exemptions list — it badly misrepresents the section's actual scope. Verified live: Section 2 (the 1961 Act's definitions section) was graded a "strong" match to Section 405 of the 2025 Act (an advance-tax computation formula) purely because Section 2's *first defined term* happens to be "advance tax" — the verifier was judging one clause among dozens as if it were the whole section. Mean-pooling every chunk's vector, sampling text across multiple chunks instead of a flat prefix, and adding an explicit caution to the verifier prompt about omnibus sections together fixed this: re-verified, Section 2 correctly returns no strong match at all, an honest reflection that the corpus has no single clean 2025-Act equivalent for a definitions section this broad.
+
+**Precedent RAG** is the one addition that adds new corpus content rather than a new way of calling existing content, and case citations are the one failure mode this project treats as worse than any other — a fabricated court citation reads exactly as confident as a real one. Every case name, citation, and holding in `data/processed/cases.jsonl` was sourced from [itatonline.org's digest of landmark Supreme Court tax judgments](https://itatonline.org/digest/articles/landmark-supreme-court-judgments-relevant-to-day-to-day-tax-practice-under-the-income-tax-act-2025-and-income-tax-act-1961/), then individually cross-checked against a secondary source (indiankanoon.org and/or independent web corroboration) before being written anywhere — not generated or recalled from model memory. This caught a real error: the digest listed *Vodafone International Holdings v. UOI* without a clear year; IndianKanoon's own judgment record and independent corroboration confirmed the actual decision date as 20 January 2012, not the digest's apparent "2003." The citation itself (341 ITR 1) was correct — only the year was wrong, and it was corrected rather than the case being dropped, since the cross-check resolved cleanly.
+
+Section links in `case_graph.json` went through the same discipline as the correspondence map, but by manual reading rather than an LLM confidence label — a case-to-section link is exactly the kind of claim this project's premise says must be checked, not asserted. Candidate sections were generated by embedding each case's holding and querying the existing section index (the one exception to "zero new embedding calls," since case text has no pre-existing vector), then every candidate's actual section text was read before a link was kept. This caught cases where the nearest vector match was topically adjacent but substantively wrong — *Vodafone*'s nearest hit by vector distance was an unrelated capital-gains exemption clause; the section that actually embodies the case's principle (the GAAR "commercial substance" test, itact1961 Section 97 / itact2025 Section 180) ranked lower by distance but was the correct link on reading both. Two of the eighteen cases (*CIT v. Excel Industries*, *CIT v. Vegetable Products*) turn on a general interpretive principle rather than any single operative provision, and no candidate for either was a genuine match on manual reading — both ship with no linked section rather than a forced weak match; the pattern says so plainly ("no linked precedent for this section") rather than silently answering statute-only with no explanation.
+
 ## Evaluation
 
 <img src="docs/eval_results.svg" alt="Bar chart: retrieval hit rate 100 percent, refusal accuracy 100 percent, citation accuracy 90 percent rising to 100 percent after a calibration fix" width="70%">
+
+**Scope.** This formal quantitative eval is scoped to Simple RAG, as it already was before the three new patterns — extending the golden-set methodology to all thirteen patterns would be a real, separate effort, not something to fold in silently. The new patterns were held to the manual, real-query verification standard described in the section above instead, applied consistently across all three rather than unevenly.
 
 **Methodology.** `eval/golden_qa.json` holds twenty hand-written questions with verified ground-truth Act-and-section answers. Every answer was checked against real, already-extracted section content rather than assumed from general tax-law knowledge — a meaningful constraint specifically for the 2025 Act, whose section titles live in the PDF's marginal-caption column, which is deliberately excluded during extraction (see [Extraction](#extraction-from-pdf-to-structured-section)) because it interleaves unpredictably with body text. Ground truth for those questions was built by reading actual section bodies directly, not by trusting a title field that does not exist for that Act.
 
