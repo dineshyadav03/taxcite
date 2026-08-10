@@ -1,11 +1,18 @@
-"""Build a cited prompt from retrieved sections and generate an answer.
+"""LLM access + the baseline cited-answer pipeline (Simple RAG).
 
-v1 generation backend: Groq (free tier) when GROQ_API_KEY is set, else
-local Ollama - same two-backend choice as the sibling ai-incident-rag
-project, for the same reason (Groq gets generation off local CPU, which
-matters on a machine under real background load).
+Generation backend: Groq (free tier) when GROQ_API_KEY is set, else local
+Ollama - same two-backend choice as the sibling ai-incident-rag project,
+for the same reason (Groq gets generation off local CPU, which matters on
+a machine under real background load).
+
+llm() is the shared primitive every pattern in src/patterns/ builds on:
+arbitrary system prompt, optional JSON mode, retry-with-backoff against
+Groq's free-tier rate limits. answer_question() is the original Simple
+RAG pipeline, kept intact because eval/run_eval.py scores against it.
 """
+import json
 import os
+import re
 import time
 
 from dotenv import load_dotenv
@@ -41,60 +48,119 @@ SYSTEM_PROMPT = """You are a research assistant answering questions about Indian
 - If the retrieved sections don't actually answer the question, say so plainly instead of guessing.
 - Be precise about which Act (2025 or 1961) a provision is from - they are different laws with different section numbering."""
 
+_groq_client = None
 
-def build_user_prompt(question, chunks):
+
+def _get_groq():
+    global _groq_client
+    if _groq_client is None:
+        from groq import Groq
+
+        _groq_client = Groq(api_key=GROQ_API_KEY)
+    return _groq_client
+
+
+def llm(user_prompt, system_prompt=SYSTEM_PROMPT, json_mode=False, max_tokens=None, temperature=0):
+    """Single LLM call with retry-with-backoff. When json_mode=True, asks
+    Groq for a JSON object response and parses it (returns a dict/list, or
+    raises ValueError if parsing fails after a salvage attempt)."""
+    max_tokens = max_tokens or OLLAMA_NUM_PREDICT
+    if GROQ_API_KEY:
+        from groq import BadRequestError, RateLimitError
+
+        client = _get_groq()
+        kwargs = {}
+        if json_mode:
+            kwargs["response_format"] = {"type": "json_object"}
+        for attempt in range(GROQ_MAX_RETRIES):
+            try:
+                response = client.chat.completions.create(
+                    model=GROQ_MODEL,
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_prompt},
+                    ],
+                    temperature=temperature,
+                    max_tokens=max_tokens,
+                    **kwargs,
+                )
+                text = response.choices[0].message.content
+                break
+            except RateLimitError:
+                if attempt == GROQ_MAX_RETRIES - 1:
+                    raise
+                time.sleep(2**attempt)
+            except BadRequestError as e:
+                # Groq's JSON-mode validator hard-errors (400,
+                # json_validate_failed - usually a truncated JSON object
+                # from hitting max_tokens mid-generation) rather than
+                # returning salvageable text. Verified live: self_rag's
+                # critique call crashed the whole pattern on this before
+                # being folded into the same ValueError every caller
+                # already handles from parse_json's own salvage failure.
+                if json_mode and "json" in str(e).lower():
+                    raise ValueError(f"Groq JSON mode failed: {e}") from e
+                raise
+    else:
+        import ollama
+
+        client = ollama.Client()
+        response = client.chat(
+            model=OLLAMA_MODEL,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt},
+            ],
+            options={"num_ctx": OLLAMA_NUM_CTX, "num_predict": max_tokens},
+            format="json" if json_mode else "",
+        )
+        text = response["message"]["content"]
+
+    if not json_mode:
+        return text
+    return parse_json(text)
+
+
+def parse_json(text):
+    """Parse LLM JSON output, salvaging the largest {...} block if the
+    model wrapped it in prose (small models do this even in JSON mode)."""
+    try:
+        return json.loads(text)
+    except (json.JSONDecodeError, TypeError):
+        m = re.search(r"\{.*\}", text or "", re.DOTALL)
+        if m:
+            try:
+                return json.loads(m.group(0))
+            except json.JSONDecodeError:
+                pass
+    raise ValueError(f"LLM did not return parseable JSON: {text[:200]!r}")
+
+
+def build_user_prompt(question, chunks, history=None):
     context_blocks = []
     for c in chunks:
         m = c["metadata"]
-        context_blocks.append(f"[{m['act_title']}, Section {m['section']}]\n{c['text']}")
+        label = m.get("act_title", "Unknown")
+        if m.get("section"):
+            label += f", Section {m['section']}"
+        if m.get("modality") == "table":
+            label += " (table)"
+        context_blocks.append(f"[{label}]\n{c['text']}")
     context = "\n\n---\n\n".join(context_blocks)
-    return f"Retrieved sections:\n\n{context}\n\n---\n\nQuestion: {question}"
-
-
-def _generate_groq(user_prompt):
-    from groq import RateLimitError, Groq
-
-    client = Groq(api_key=GROQ_API_KEY)
-    for attempt in range(GROQ_MAX_RETRIES):
-        try:
-            response = client.chat.completions.create(
-                model=GROQ_MODEL,
-                messages=[
-                    {"role": "system", "content": SYSTEM_PROMPT},
-                    {"role": "user", "content": user_prompt},
-                ],
-                temperature=0,
-                max_tokens=OLLAMA_NUM_PREDICT,
-            )
-            return response.choices[0].message.content
-        except RateLimitError:
-            if attempt == GROQ_MAX_RETRIES - 1:
-                raise
-            time.sleep(2**attempt)
-
-
-def _generate_ollama(user_prompt):
-    import ollama
-
-    client = ollama.Client()
-    response = client.chat(
-        model=OLLAMA_MODEL,
-        messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": user_prompt},
-        ],
-        options={"num_ctx": OLLAMA_NUM_CTX, "num_predict": OLLAMA_NUM_PREDICT},
-    )
-    return response["message"]["content"]
+    prompt = f"Retrieved sections:\n\n{context}\n\n---\n\n"
+    if history:
+        prompt += f"Conversation so far:\n{history}\n\n---\n\n"
+    prompt += f"Question: {question}"
+    return prompt
 
 
 def _generate(user_prompt):
-    if GROQ_API_KEY:
-        return _generate_groq(user_prompt)
-    return _generate_ollama(user_prompt)
+    return llm(user_prompt)
 
 
 def answer_question(question, top_k=5):
+    """The original Simple RAG pipeline (pattern 1). eval/run_eval.py
+    scores against this - keep its contract stable."""
     chunks = search(question, top_k=top_k)
 
     if not chunks or chunks[0]["distance"] > DISTANCE_REFUSAL_THRESHOLD:

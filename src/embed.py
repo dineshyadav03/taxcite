@@ -188,7 +188,71 @@ def build_index(persist_dir=None, resume=True):
     return collection
 
 
+def build_table_index(persist_dir=None, resume=True):
+    """Index data/processed/tables.jsonl into a separate collection
+    (income_tax_tables) - the table modality for multi-modal retrieval.
+    Same resumable/incremental shape as build_index, same reason."""
+    persist_dir = str(persist_dir or ROOT / "chroma_db")
+    client = chromadb.PersistentClient(path=persist_dir)
+    existing_names = [c.name for c in client.list_collections()]
+    if not resume and "income_tax_tables" in existing_names:
+        client.delete_collection("income_tax_tables")
+        existing_names.remove("income_tax_tables")
+    collection = (
+        client.get_collection("income_tax_tables")
+        if "income_tax_tables" in existing_names
+        else client.create_collection("income_tax_tables")
+    )
+    already_done = set(collection.get(include=[])["ids"]) if resume else set()
+
+    documents, metadatas, ids = [], [], []
+    tables_path = ROOT / "data" / "processed" / "tables.jsonl"
+    with tables_path.open(encoding="utf-8") as f:
+        for line in f:
+            t = json.loads(line)
+            chunk_id = f"{t['act_id']}::table::{t['page']}::{t['table_index']}"
+            if chunk_id in already_done:
+                continue
+            # cap outliers: one Schedule table can serialize to tens of KB,
+            # blowing the 10K TPM budget in a single batch item
+            text = t["text"][:4000]
+            documents.append(text)
+            metadatas.append(
+                {
+                    "act_id": t["act_id"],
+                    "act_title": t["act_title"],
+                    "section": t.get("section") or "",
+                    "page": t["page"],
+                    "modality": "table",
+                }
+            )
+            ids.append(chunk_id)
+
+    if not documents:
+        print(f"Nothing to do - {collection.count()} table chunks already indexed")
+        return collection
+
+    print(f"Embedding {len(documents)} table chunks, {len(already_done)} already done...")
+    for batch_num, start in enumerate(range(0, len(documents), EMBED_BATCH_SIZE)):
+        if batch_num > 0:
+            time.sleep(EMBED_CALL_SPACING_SECONDS)
+        end = start + EMBED_BATCH_SIZE
+        batch_embeddings = embed_texts(documents[start:end], input_type="document")
+        collection.add(
+            documents=documents[start:end],
+            embeddings=batch_embeddings,
+            metadatas=metadatas[start:end],
+            ids=ids[start:end],
+        )
+        print(f"  indexed {min(end, len(documents))}/{len(documents)}")
+    print(f"Table index: {collection.count()} chunks")
+    return collection
+
+
 if __name__ == "__main__":
     import sys
 
-    build_index(resume="--fresh" not in sys.argv)
+    if "--tables" in sys.argv:
+        build_table_index(resume="--fresh" not in sys.argv)
+    else:
+        build_index(resume="--fresh" not in sys.argv)

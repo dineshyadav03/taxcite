@@ -1,0 +1,136 @@
+<svg viewBox="0 0 980 480" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="TaxCite pipeline: two source PDFs are extracted by font-weight boundary detection into sections and tables, chunked and embedded into two ChromaDB collections plus a regex-built cross-reference graph, then ten pattern modules query that shared substrate before Groq generates a cited answer served by FastAPI.">
+  <rect width="980" height="480" fill="#ffffff"/>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333333"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: -apple-system, Segoe UI, Helvetica, Arial, sans-serif; fill: #1a1a1a; }
+    .box { fill: #f5f5f5; stroke: #333333; stroke-width: 1.3; }
+    .box2 { fill: #eef4fb; stroke: #2c5f8a; stroke-width: 1.3; }
+    .box3 { fill: #fbf3e6; stroke: #a06a1a; stroke-width: 1.3; }
+    .lbl { font-size: 12px; }
+    .sub { font-size: 10px; fill: #555555; }
+    .edge { stroke: #333333; stroke-width: 1.2; fill: none; marker-end: url(#arrow); }
+    .edgelabel { font-size: 9.5px; fill: #444444; }
+    .section-title { font-size: 12.5px; font-weight: 600; fill: #333; }
+  </style>
+
+  <!-- Sources -->
+  <rect x="20" y="30" width="130" height="46" rx="4" class="box"/>
+  <text x="85" y="49" class="lbl" text-anchor="middle">Income-tax Act</text>
+  <text x="85" y="63" class="sub" text-anchor="middle">2025 &amp; 1961 (PDF)</text>
+
+  <!-- Extraction -->
+  <rect x="200" y="20" width="150" height="66" rx="4" class="box"/>
+  <text x="275" y="40" class="lbl" text-anchor="middle">Extraction</text>
+  <text x="275" y="54" class="sub" text-anchor="middle">bold-font section</text>
+  <text x="275" y="66" class="sub" text-anchor="middle">boundary detection</text>
+  <text x="275" y="78" class="sub" text-anchor="middle">536+707 sections</text>
+
+  <line x1="150" y1="53" x2="198" y2="53" class="edge"/>
+
+  <!-- Table extraction, parallel path -->
+  <rect x="200" y="100" width="150" height="52" rx="4" class="box3"/>
+  <text x="275" y="120" class="lbl" text-anchor="middle">Table extraction</text>
+  <text x="275" y="134" class="sub" text-anchor="middle">pdfplumber grids</text>
+  <text x="275" y="146" class="sub" text-anchor="middle">165 tables</text>
+  <line x1="85" y1="76" x2="85" y2="126" class="edge"/>
+  <line x1="85" y1="126" x2="198" y2="126" class="edge"/>
+
+  <!-- Chunking -->
+  <rect x="400" y="20" width="150" height="66" rx="4" class="box"/>
+  <text x="475" y="40" class="lbl" text-anchor="middle">Chunking</text>
+  <text x="475" y="54" class="sub" text-anchor="middle">700-tok windows</text>
+  <text x="475" y="66" class="sub" text-anchor="middle">100-tok overlap</text>
+  <text x="475" y="78" class="sub" text-anchor="middle">2,402 chunks</text>
+  <line x1="350" y1="53" x2="398" y2="53" class="edge"/>
+
+  <!-- Graph extraction -->
+  <rect x="400" y="100" width="150" height="52" rx="4" class="box3"/>
+  <text x="475" y="120" class="lbl" text-anchor="middle">Cross-ref graph</text>
+  <text x="475" y="134" class="sub" text-anchor="middle">regex over section text</text>
+  <text x="475" y="146" class="sub" text-anchor="middle">3,683 edges</text>
+  <line x1="275" y1="86" x2="275" y2="126" class="edge" stroke-dasharray="0"/>
+  <line x1="275" y1="126" x2="398" y2="126" class="edge"/>
+  <line x1="350" y1="126" x2="398" y2="126" class="edge" opacity="0"/>
+
+  <!-- Embedding -->
+  <rect x="600" y="20" width="150" height="66" rx="4" class="box2"/>
+  <text x="675" y="40" class="lbl" text-anchor="middle">Embedding</text>
+  <text x="675" y="54" class="sub" text-anchor="middle">Voyage AI voyage-4</text>
+  <text x="675" y="66" class="sub" text-anchor="middle">hosted, 1024-dim</text>
+  <text x="675" y="78" class="sub" text-anchor="middle">asymmetric doc/query</text>
+  <line x1="550" y1="53" x2="598" y2="53" class="edge"/>
+
+  <rect x="600" y="100" width="150" height="52" rx="4" class="box2"/>
+  <text x="675" y="120" class="lbl" text-anchor="middle">Embedding (tables)</text>
+  <text x="675" y="134" class="sub" text-anchor="middle">same model</text>
+  <line x1="550" y1="126" x2="598" y2="126" class="edge"/>
+
+  <!-- ChromaDB -->
+  <rect x="800" y="20" width="160" height="66" rx="4" class="box2"/>
+  <text x="880" y="40" class="lbl" text-anchor="middle">ChromaDB</text>
+  <text x="880" y="54" class="sub" text-anchor="middle">income_tax_sections</text>
+  <text x="880" y="66" class="sub" text-anchor="middle">HNSW index, local</text>
+  <line x1="750" y1="53" x2="798" y2="53" class="edge"/>
+
+  <rect x="800" y="100" width="160" height="52" rx="4" class="box2"/>
+  <text x="880" y="120" class="lbl" text-anchor="middle">income_tax_tables</text>
+  <text x="880" y="134" class="sub" text-anchor="middle">second collection</text>
+  <line x1="750" y1="126" x2="798" y2="126" class="edge"/>
+
+  <!-- divider -->
+  <line x1="20" y1="185" x2="960" y2="185" stroke="#cccccc" stroke-width="1"/>
+  <text x="20" y="205" class="section-title">Ten pattern modules query the shared substrate above</text>
+
+  <!-- retrieval substrate box -->
+  <rect x="20" y="220" width="300" height="90" rx="4" class="box"/>
+  <text x="170" y="240" class="lbl" text-anchor="middle" font-weight="600">Retrieval substrate</text>
+  <text x="170" y="256" class="sub" text-anchor="middle">exact_section_lookup (regex, dist=0.0)</text>
+  <text x="170" y="270" class="sub" text-anchor="middle">vector_search (Voyage query embedding)</text>
+  <text x="170" y="284" class="sub" text-anchor="middle">table_search / fetch_section / graph.references_of</text>
+  <text x="170" y="298" class="sub" text-anchor="middle">retrieve.py, graph.py, memory.py</text>
+
+  <line x1="880" y1="152" x2="880" y2="175" stroke="#333333" stroke-width="1.2"/>
+  <line x1="170" y1="175" x2="880" y2="175" stroke="#333333" stroke-width="1.2"/>
+  <line x1="170" y1="175" x2="170" y2="218" class="edge"/>
+
+  <!-- patterns -->
+  <g>
+    <rect x="350" y="215" width="600" height="100" rx="4" fill="#ffffff" stroke="#999999" stroke-dasharray="3,2"/>
+    <text x="360" y="230" class="sub" font-weight="600">src/patterns/</text>
+    <!-- 10 small boxes, 5x2 -->
+    <g font-size="10">
+      <rect x="360" y="238" width="106" height="26" rx="3" class="box"/><text x="413" y="255" text-anchor="middle">simple</text>
+      <rect x="474" y="238" width="106" height="26" rx="3" class="box"/><text x="527" y="255" text-anchor="middle">memory</text>
+      <rect x="588" y="238" width="106" height="26" rx="3" class="box"/><text x="641" y="255" text-anchor="middle">branched</text>
+      <rect x="702" y="238" width="106" height="26" rx="3" class="box"/><text x="755" y="255" text-anchor="middle">hyde</text>
+      <rect x="816" y="238" width="120" height="26" rx="3" class="box"/><text x="876" y="255" text-anchor="middle">adaptive</text>
+
+      <rect x="360" y="272" width="106" height="26" rx="3" class="box"/><text x="413" y="289" text-anchor="middle">corrective</text>
+      <rect x="474" y="272" width="106" height="26" rx="3" class="box"/><text x="527" y="289" text-anchor="middle">self_rag</text>
+      <rect x="588" y="272" width="106" height="26" rx="3" class="box"/><text x="641" y="289" text-anchor="middle">agentic</text>
+      <rect x="702" y="272" width="106" height="26" rx="3" class="box"/><text x="755" y="289" text-anchor="middle">multimodal</text>
+      <rect x="816" y="272" width="120" height="26" rx="3" class="box"/><text x="876" y="289" text-anchor="middle">graph</text>
+    </g>
+  </g>
+  <line x1="320" y1="265" x2="348" y2="265" class="edge"/>
+
+  <!-- generation + UI -->
+  <line x1="650" y1="315" x2="650" y2="345" class="edge"/>
+  <rect x="380" y="350" width="180" height="52" rx="4" class="box3"/>
+  <text x="470" y="370" class="lbl" text-anchor="middle">Generation</text>
+  <text x="470" y="384" class="sub" text-anchor="middle">Groq (free tier)</text>
+  <text x="470" y="396" class="sub" text-anchor="middle">llama-3.1-8b-instant</text>
+  <line x1="560" y1="376" x2="598" y2="376" class="edge"/>
+
+  <rect x="600" y="350" width="180" height="52" rx="4" class="box"/>
+  <text x="690" y="370" class="lbl" text-anchor="middle">FastAPI + UI</text>
+  <text x="690" y="384" class="sub" text-anchor="middle">server.py</text>
+  <text x="690" y="396" class="sub" text-anchor="middle">static/index.html</text>
+
+  <text x="20" y="430" class="sub">Boxes: gray = local compute/storage, blue = hosted API call, tan = local-compute analysis (no API cost).</text>
+  <text x="20" y="446" class="sub">Every pattern returns a trace of what it actually did, not just an answer - see docs/patterns.md.</text>
+</svg>

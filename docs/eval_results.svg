@@ -1,0 +1,42 @@
+<svg viewBox="0 0 640 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Evaluation results against the 20-question golden set: retrieval hit rate 100 percent, refusal accuracy 100 percent, citation accuracy 90 percent rising to 100 percent after fixing a miscalibrated refusal threshold found live during evaluation.">
+  <rect width="640" height="300" fill="#ffffff"/>
+  <style>
+    text { font-family: -apple-system, Segoe UI, Helvetica, Arial, sans-serif; fill: #1a1a1a; }
+    .axis { stroke: #cccccc; stroke-width: 1; }
+    .bar { }
+    .val { font-size: 13px; font-weight: 600; }
+    .lbl { font-size: 12px; }
+    .sub { font-size: 10.5px; fill: #555555; }
+  </style>
+
+  <!-- baseline -->
+  <line x1="60" y1="230" x2="600" y2="230" class="axis"/>
+  <line x1="60" y1="30" x2="60" y2="230" class="axis"/>
+  <text x="45" y="34" class="sub" text-anchor="end">100%</text>
+  <text x="45" y="132" class="sub" text-anchor="end">50%</text>
+  <text x="45" y="230" class="sub" text-anchor="end">0%</text>
+  <line x1="60" y1="130" x2="600" y2="130" stroke="#eeeeee" stroke-width="1"/>
+
+  <!-- bar 1: retrieval hit rate 100% -->
+  <rect x="110" y="30" width="90" height="200" fill="#2c5f8a"/>
+  <text x="155" y="20" class="val" text-anchor="middle">100%</text>
+  <text x="155" y="250" class="lbl" text-anchor="middle">retrieval</text>
+  <text x="155" y="264" class="lbl" text-anchor="middle">hit rate</text>
+
+  <!-- bar 2: refusal accuracy 100% -->
+  <rect x="260" y="30" width="90" height="200" fill="#2c5f8a"/>
+  <text x="305" y="20" class="val" text-anchor="middle">100%</text>
+  <text x="305" y="250" class="lbl" text-anchor="middle">refusal</text>
+  <text x="305" y="264" class="lbl" text-anchor="middle">accuracy</text>
+
+  <!-- bar 3: citation accuracy 90% then 100%, shown as two segments -->
+  <rect x="410" y="50" width="90" height="180" fill="#f5f5f5" stroke="#a06a1a" stroke-width="1.3" stroke-dasharray="4,3"/>
+  <rect x="410" y="30" width="90" height="200" fill="none" stroke="#a06a1a" stroke-width="1.3"/>
+  <line x1="410" y1="50" x2="500" y2="50" stroke="#a06a1a" stroke-width="1.3"/>
+  <text x="455" y="20" class="val" text-anchor="middle">90% -&gt; 100%</text>
+  <text x="455" y="250" class="lbl" text-anchor="middle">citation</text>
+  <text x="455" y="264" class="lbl" text-anchor="middle">accuracy</text>
+  <text x="455" y="42" class="sub" text-anchor="middle" fill="#a06a1a">after fix</text>
+
+  <text x="60" y="290" class="sub">20-question hand-verified golden set, eval/golden_qa.json - self-defined metrics, not an external benchmark.</text>
+</svg>

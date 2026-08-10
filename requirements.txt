@@ -5,4 +5,5 @@ voyageai
 tiktoken
 groq
 python-dotenv
-streamlit
+fastapi
+uvicorn[standard]

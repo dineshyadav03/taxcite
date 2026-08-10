@@ -1,0 +1,58 @@
+<svg viewBox="0 0 820 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Real cross-reference graph around Section 139 of the 1961 Act: 33 outgoing edges to sections it cites, and edges from other sections that cite it back, none of which vector similarity alone would surface since these sections are legally coupled but not semantically alike.">
+  <rect width="820" height="380" fill="#ffffff"/>
+  <defs>
+    <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#555555"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: -apple-system, Segoe UI, Helvetica, Arial, sans-serif; fill: #1a1a1a; }
+    .center { fill: #2c5f8a; stroke: #1a3d5c; stroke-width: 1.5; }
+    .centertext { fill: #ffffff; font-size: 13px; font-weight: 600; }
+    .cite { fill: #f5f5f5; stroke: #333333; stroke-width: 1.1; }
+    .citedby { fill: #fbf3e6; stroke: #a06a1a; stroke-width: 1.1; }
+    .nodelabel { font-size: 11px; }
+    .edge { stroke: #888888; stroke-width: 1; fill: none; marker-end: url(#arrow2); }
+    .cap { font-size: 11px; fill: #333; }
+    .capB { font-size: 11.5px; fill: #333; font-weight: 600; }
+  </style>
+
+  <!-- center node -->
+  <circle cx="410" cy="190" r="46" class="center"/>
+  <text x="410" y="186" class="centertext" text-anchor="middle">Section 139</text>
+  <text x="410" y="202" class="centertext" text-anchor="middle" font-size="10" font-weight="400">1961 Act</text>
+
+  <!-- outgoing: 6 of its 33 real citations, left side -->
+  <g>
+    <circle cx="150" cy="60"  r="26" class="cite"/><text x="150" y="64" class="nodelabel" text-anchor="middle">10</text>
+    <circle cx="90"  cy="140" r="26" class="cite"/><text x="90"  y="144" class="nodelabel" text-anchor="middle">142</text>
+    <circle cx="90"  cy="230" r="26" class="cite"/><text x="90"  y="234" class="nodelabel" text-anchor="middle">147</text>
+    <circle cx="150" cy="310" r="26" class="cite"/><text x="150" y="314" class="nodelabel" text-anchor="middle">197A</text>
+    <circle cx="230" cy="40"  r="26" class="cite"/><text x="230" y="44" class="nodelabel" text-anchor="middle">13A</text>
+    <circle cx="230" cy="340" r="26" class="cite"/><text x="230" y="344" class="nodelabel" text-anchor="middle">72</text>
+
+    <line x1="176" y1="70"  x2="372" y2="172" class="edge"/>
+    <line x1="116" y1="150" x2="366" y2="182" class="edge"/>
+    <line x1="116" y1="220" x2="366" y2="200" class="edge"/>
+    <line x1="176" y1="300" x2="372" y2="208" class="edge"/>
+    <line x1="252" y1="55"  x2="386" y2="152" class="edge"/>
+    <line x1="252" y1="325" x2="386" y2="228" class="edge"/>
+  </g>
+
+  <!-- incoming: 4 real citers, right side -->
+  <g>
+    <circle cx="680" cy="70"  r="26" class="citedby"/><text x="680" y="74" class="nodelabel" text-anchor="middle">10AA</text>
+    <circle cx="740" cy="150" r="26" class="citedby"/><text x="740" y="154" class="nodelabel" text-anchor="middle">115</text>
+    <circle cx="740" cy="230" r="26" class="citedby"/><text x="740" y="234" class="nodelabel" text-anchor="middle">115B</text>
+    <circle cx="680" cy="310" r="26" class="citedby"/><text x="680" y="314" class="nodelabel" text-anchor="middle">115BBE</text>
+
+    <line x1="454" y1="163" x2="656" y2="82" class="edge"/>
+    <line x1="454" y1="180" x2="716" y2="155" class="edge"/>
+    <line x1="454" y1="200" x2="716" y2="225" class="edge"/>
+    <line x1="454" y1="217" x2="656" y2="298" class="edge"/>
+  </g>
+
+  <text x="60" y="360" class="capB">33 sections 139 cites -&gt;</text>
+  <text x="600" y="360" class="capB">&lt;- sections that cite 139 back</text>
+  <text x="30" y="20" class="cap">Real edges from data/processed/xref_graph.json - 6 of 33 outgoing and 4 of the incoming shown for legibility.</text>
+</svg>

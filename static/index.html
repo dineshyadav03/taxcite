@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TaxCite</title>
+<style>
+  :root {
+    --bg: #0e1116; --panel: #161b23; --panel2: #1c232e; --border: #2a3442;
+    --text: #dce3ec; --dim: #8b98a9; --accent: #d9a441; --accent2: #4f8cc9;
+    --good: #5fb878; --bad: #d97652; --mono: ui-monospace, "Cascadia Code", Consolas, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    background: var(--bg); color: var(--text);
+    font: 15px/1.55 "Segoe UI", system-ui, sans-serif;
+    display: flex; flex-direction: column; height: 100vh;
+  }
+  header {
+    display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;
+    padding: 14px 22px; border-bottom: 1px solid var(--border); background: var(--panel);
+  }
+  header h1 { font-size: 19px; letter-spacing: .4px; }
+  header h1 span { color: var(--accent); }
+  header .sub { color: var(--dim); font-size: 12.5px; }
+  main { display: flex; flex: 1; min-height: 0; }
+  #chat-col { flex: 1.4; display: flex; flex-direction: column; min-width: 0; }
+  #messages { flex: 1; overflow-y: auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 14px; }
+  .msg { max-width: 88%; padding: 12px 16px; border-radius: 10px; white-space: pre-wrap; overflow-wrap: break-word; }
+  .msg.user { align-self: flex-end; background: var(--accent2); color: #0d1622; border-bottom-right-radius: 3px; }
+  .msg.bot { align-self: flex-start; background: var(--panel2); border: 1px solid var(--border); border-bottom-left-radius: 3px; }
+  .msg.bot.refused { border-color: var(--bad); }
+  .msg .meta { margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--border); font-size: 12px; color: var(--dim); }
+  .msg .meta .badge { display: inline-block; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 1px 7px; margin: 2px 4px 2px 0; font-family: var(--mono); font-size: 11px; }
+  .badge.table { border-color: var(--accent); color: var(--accent); }
+  .badge.ref { border-color: var(--good); color: var(--good); }
+  .msg.pending { color: var(--dim); font-style: italic; }
+  #composer { display: flex; gap: 10px; padding: 14px 22px; border-top: 1px solid var(--border); background: var(--panel); }
+  #composer input {
+    flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+    color: var(--text); padding: 11px 14px; font-size: 15px; outline: none;
+  }
+  #composer input:focus { border-color: var(--accent2); }
+  #composer button {
+    background: var(--accent); color: #1a1508; border: 0; border-radius: 8px;
+    padding: 0 22px; font-size: 15px; font-weight: 600; cursor: pointer;
+  }
+  #composer button:disabled { opacity: .5; cursor: wait; }
+  #side { flex: 1; max-width: 460px; border-left: 1px solid var(--border); background: var(--panel);
+          display: flex; flex-direction: column; min-width: 300px; }
+  #side h2 { font-size: 12.5px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--dim); padding: 14px 18px 6px; }
+  #pattern-box { padding: 4px 18px 12px; border-bottom: 1px solid var(--border); }
+  #pattern-select { width: 100%; background: var(--bg); color: var(--text); border: 1px solid var(--border);
+                    border-radius: 8px; padding: 9px 10px; font-size: 14px; }
+  #pattern-desc { font-size: 12.5px; color: var(--dim); margin-top: 8px; min-height: 34px; }
+  #trace { flex: 1; overflow-y: auto; padding: 10px 18px 18px; font-family: var(--mono); font-size: 12px; }
+  #trace pre { white-space: pre-wrap; overflow-wrap: break-word; color: #a8c7e8; }
+  #trace .empty { color: var(--dim); font-family: inherit; }
+  .examples { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 18px 14px; border-bottom: 1px solid var(--border); }
+  .examples button {
+    background: var(--panel2); color: var(--dim); border: 1px solid var(--border);
+    border-radius: 14px; padding: 5px 12px; font-size: 12px; cursor: pointer; text-align: left;
+  }
+  .examples button:hover { color: var(--text); border-color: var(--accent2); }
+  @media (max-width: 900px) { #side { display: none; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Tax<span>Cite</span></h1>
+  <div class="sub">Citation-grounded RAG over the Income-tax Act 2025 &amp; 1961 &middot; ten selectable retrieval patterns &middot; every answer cites Act + Section</div>
+</header>
+<main>
+  <div id="chat-col">
+    <div id="messages">
+      <div class="msg bot">Ask anything about Indian income tax law. Pick a RAG pattern on the right (or leave it on <b>adaptive</b> and let the router decide) — the trace panel shows what the pattern actually did: sub-questions asked, chunks graded, references followed.</div>
+    </div>
+    <div id="composer">
+      <input id="q" placeholder="e.g. What does section 139 of the 1961 Act say?" autocomplete="off">
+      <button id="send">Ask</button>
+    </div>
+  </div>
+  <aside id="side">
+    <h2>Pattern</h2>
+    <div id="pattern-box">
+      <select id="pattern-select"></select>
+      <div id="pattern-desc"></div>
+    </div>
+    <h2>Try</h2>
+    <div class="examples">
+      <button data-q="What does section 139 of the Income-tax Act 1961 say?">exact section lookup</button>
+      <button data-q="How does section 139 differ between the old 1961 Act and the new 2025 Act?" data-p="branched">old vs new comparison</button>
+      <button data-q="Do I need to pay tax on money my friend transferred to me?" data-p="hyde">colloquial question</button>
+      <button data-q="What rate applies to income from Global Depository Receipts?" data-p="multimodal">rate table lookup</button>
+      <button data-q="Which sections does section 139 of the 1961 Act depend on?" data-p="agentic">reference chasing</button>
+    </div>
+    <h2>Trace</h2>
+    <div id="trace"><div class="empty">The last answer's internal steps appear here.</div></div>
+  </aside>
+</main>
+<script>
+const messages = document.getElementById("messages");
+const traceEl = document.getElementById("trace");
+const sel = document.getElementById("pattern-select");
+const desc = document.getElementById("pattern-desc");
+const input = document.getElementById("q");
+const sendBtn = document.getElementById("send");
+let sessionId = localStorage.getItem("taxcite_session") || crypto.randomUUID();
+localStorage.setItem("taxcite_session", sessionId);
+let patternInfo = {};
+
+fetch("/api/patterns").then(r => r.json()).then(d => {
+  for (const p of d.patterns) {
+    patternInfo[p.name] = p.description;
+    const o = document.createElement("option");
+    o.value = p.name; o.textContent = p.name;
+    if (p.name === "adaptive") o.selected = true;
+    sel.appendChild(o);
+  }
+  desc.textContent = patternInfo[sel.value] || "";
+});
+sel.addEventListener("change", () => desc.textContent = patternInfo[sel.value] || "");
+
+document.querySelectorAll(".examples button").forEach(b => b.addEventListener("click", () => {
+  input.value = b.dataset.q;
+  if (b.dataset.p) { sel.value = b.dataset.p; desc.textContent = patternInfo[sel.value] || ""; }
+  input.focus();
+}));
+
+function add(cls, text) {
+  const div = document.createElement("div");
+  div.className = "msg " + cls;
+  div.textContent = text;
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
+  return div;
+}
+
+async function ask() {
+  const q = input.value.trim();
+  if (!q || sendBtn.disabled) return;
+  input.value = "";
+  add("user", q);
+  const pending = add("bot pending", "thinking… (" + sel.value + " — hosted embedding is throttled to 3 req/min, multi-step patterns take longer)");
+  sendBtn.disabled = true;
+  try {
+    const r = await fetch("/api/ask", {
+      method: "POST", headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({question: q, pattern: sel.value, session_id: sessionId}),
+    });
+    const d = await r.json();
+    pending.remove();
+    if (d.error) { add("bot refused", "Error: " + d.error); return; }
+    const div = add("bot" + (d.refused ? " refused" : ""), d.answer);
+    const meta = document.createElement("div");
+    meta.className = "meta";
+    let html = `<span class="badge">${d.pattern}</span><span class="badge">${d.elapsed_seconds}s</span>`;
+    for (const s of d.sources) {
+      const cls = s.modality === "table" ? "badge table" : (s.via_reference ? "badge ref" : "badge");
+      const label = (s.section ? "s." + s.section : "p." + s.page) +
+        (s.act && s.act.includes("1961") ? " ('61)" : " ('25)") +
+        (s.modality === "table" ? " ⊞" : "") + (s.via_reference ? " ←ref" : "");
+      html += `<span class="${cls}">${label}</span>`;
+    }
+    meta.innerHTML = html;
+    div.appendChild(meta);
+    traceEl.innerHTML = "";
+    const pre = document.createElement("pre");
+    pre.textContent = JSON.stringify(d.trace, null, 2);
+    traceEl.appendChild(pre);
+  } catch (e) {
+    pending.remove();
+    add("bot refused", "Request failed: " + e);
+  } finally {
+    sendBtn.disabled = false;
+    input.focus();
+  }
+}
+sendBtn.addEventListener("click", ask);
+input.addEventListener("keydown", e => { if (e.key === "Enter") ask(); });
+</script>
+</body>
+</html>
