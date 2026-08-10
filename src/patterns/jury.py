@@ -14,8 +14,19 @@ silently would hide that.
 Sequential, not parallel: Voyage's free tier is 3 requests/minute, so
 three concurrent embedding calls would just be rate-limit-queued anyway -
 sequential costs nothing extra in wall clock.
+
+All three jurors' *first* retrieval call embeds the exact same question
+text, so the query vector is identical across them - computed once here
+and passed to each juror instead of three separate Voyage calls (four,
+counting Corrective's possible retry). Verified live: this was the
+actual cause of Jury RAG's 100-180s latency, not generation time - three
+sequential embedding calls under Voyage's 3 RPM free-tier throttle means
+the 2nd and 3rd calls routinely queue behind a 21-42s backoff. One shared
+embedding removes two of those three calls outright.
 """
 from collections import Counter
+
+from retrieve import embed_query
 
 _JURORS = ["simple", "corrective", "graph"]
 
@@ -24,10 +35,12 @@ def answer(question, session_id=None):
     # avoid circular import: jury imports the registry lazily, same as adaptive.py
     from patterns import PATTERNS
 
+    embedding = embed_query(question)
+
     votes = []
     results = {}
     for name in _JURORS:
-        result = PATTERNS[name](question, session_id=session_id)
+        result = PATTERNS[name](question, session_id=session_id, embedding=embedding)
         results[name] = result
         if result.get("refused") or not result.get("chunks"):
             vote = None

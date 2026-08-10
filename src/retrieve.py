@@ -158,16 +158,20 @@ def exact_section_lookup(query):
     return interleaved
 
 
-def search(query, top_k=5):
+def search(query, top_k=5, embedding=None):
     """Exact section-number hits first (if the query names one), then
-    vector search fills any remaining slots, deduplicated by id."""
+    vector search fills any remaining slots, deduplicated by id.
+    embedding lets a caller reuse an already-computed query vector
+    (e.g. Jury RAG embedding once for three jurors instead of three
+    times) instead of paying for a fresh Voyage call - only valid when
+    the query text is the same one the embedding was computed from."""
     exact = exact_section_lookup(query)
     if len(exact) >= top_k:
         return exact[:top_k]
 
     seen_ids = {c["id"] for c in exact}
     combined = list(exact)
-    for c in vector_search(query, top_k=top_k):
+    for c in vector_search(query, top_k=top_k, embedding=embedding):
         if len(combined) >= top_k:
             break
         if c["id"] not in seen_ids:

@@ -64,7 +64,7 @@ def index():
 
 @app.get("/api/patterns")
 def patterns():
-    return {"patterns": [{"name": name, "description": PATTERN_INFO[name]} for name in PATTERNS]}
+    return {"patterns": [{"name": name, **PATTERN_INFO[name]} for name in PATTERNS]}
 
 
 @app.post("/api/ask")

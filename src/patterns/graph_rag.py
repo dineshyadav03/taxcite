@@ -29,9 +29,9 @@ _REFS_PER_SEED = 3
 _MAX_CONTEXT = 8
 
 
-def answer(question, session_id=None):
+def answer(question, session_id=None, embedding=None):
     trace = {"seeds": [], "expansions": {}}
-    seeds = search(question, top_k=_SEED_K)
+    seeds = search(question, top_k=_SEED_K, embedding=embedding)
 
     if not seeds or seeds[0]["distance"] > DISTANCE_REFUSAL_THRESHOLD:
         return {"answer": REFUSAL_MESSAGE, "chunks": seeds, "refused": True, "trace": trace}

@@ -36,9 +36,9 @@ def _grade(question, chunks):
     return relevant, grades, verdict.get("better_query")
 
 
-def answer(question, session_id=None):
+def answer(question, session_id=None, embedding=None):
     trace = {"rounds": []}
-    chunks = search(question, top_k=6)
+    chunks = search(question, top_k=6, embedding=embedding)
 
     try:
         relevant, grades, better_query = _grade(question, chunks)

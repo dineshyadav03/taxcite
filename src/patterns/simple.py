@@ -8,8 +8,8 @@ given query class is overhead, not progress.
 from generate import answer_question
 
 
-def answer(question, session_id=None):
-    result = answer_question(question)
+def answer(question, session_id=None, embedding=None):
+    result = answer_question(question, embedding=embedding)
     result["trace"] = {
         "retrieval": [
             {

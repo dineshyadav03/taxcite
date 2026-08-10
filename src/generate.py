@@ -164,10 +164,11 @@ def _generate(user_prompt):
     return llm(user_prompt)
 
 
-def answer_question(question, top_k=5):
+def answer_question(question, top_k=5, embedding=None):
     """The original Simple RAG pipeline (pattern 1). eval/run_eval.py
-    scores against this - keep its contract stable."""
-    chunks = search(question, top_k=top_k)
+    scores against this - keep its contract stable. embedding lets a
+    caller (e.g. Jury RAG) reuse an already-computed query vector."""
+    chunks = search(question, top_k=top_k, embedding=embedding)
 
     if not chunks or chunks[0]["distance"] > DISTANCE_REFUSAL_THRESHOLD:
         return {"answer": REFUSAL_MESSAGE, "chunks": chunks, "refused": True}
