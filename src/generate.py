@@ -21,11 +21,14 @@ OLLAMA_NUM_CTX = int(os.environ.get("OLLAMA_NUM_CTX", "6144"))
 OLLAMA_NUM_PREDICT = int(os.environ.get("OLLAMA_NUM_PREDICT", "500"))
 GROQ_MAX_RETRIES = int(os.environ.get("GROQ_MAX_RETRIES", "3"))
 
-# Calibrated empirically (see scripts/calibrate_threshold.py output): the
-# top match's cosine distance for genuinely relevant queries vs. off-corpus
-# ones. Refusing beyond this avoids confidently answering from an
-# irrelevant section - the exact failure mode this project exists to avoid.
-DISTANCE_REFUSAL_THRESHOLD = float(os.environ.get("DISTANCE_REFUSAL_THRESHOLD", "0.9"))
+# Calibrated against real eval failures, not guessed: 0.9 (the original
+# value, picked before switching to Voyage AI) caused 3/20 golden-set
+# questions to refuse even though retrieval had found the right section
+# (retrieval_hit_rate was 1.00 while citation/pass rate was lower) -
+# Voyage's distance scale for genuinely relevant-but-not-lexically-obvious
+# matches runs ~0.9-1.15, while verified off-corpus queries (chocolate
+# chip cookies, GST) score ~1.2-1.4. 1.15 sits in that gap.
+DISTANCE_REFUSAL_THRESHOLD = float(os.environ.get("DISTANCE_REFUSAL_THRESHOLD", "1.15"))
 
 REFUSAL_MESSAGE = (
     "I don't have a well-matched section in the indexed Acts for this question. "
@@ -34,7 +37,7 @@ REFUSAL_MESSAGE = (
 
 SYSTEM_PROMPT = """You are a research assistant answering questions about Indian income tax law, grounded ONLY in the retrieved Act sections provided below. Rules:
 - Answer using only the retrieved text. Do not use outside knowledge of tax law, even if you believe you know the answer.
-- Every claim must be attributable to a specific retrieved section. Cite as (Act title, Section N) inline.
+- Every claim must be attributable to a specific retrieved section. Cite the real Act title and section number inline in parentheses, e.g. "(Income-tax Act, 1961, Section 139)" - use the actual values from the retrieved sections, never the literal words "Act title" or "Section N".
 - If the retrieved sections don't actually answer the question, say so plainly instead of guessing.
 - Be precise about which Act (2025 or 1961) a provision is from - they are different laws with different section numbering."""
 

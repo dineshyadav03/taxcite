@@ -14,7 +14,7 @@ from pathlib import Path
 
 import chromadb
 
-from embed import get_embedding_model
+from embed import embed_texts
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -36,8 +36,10 @@ def get_collection(persist_dir=None):
 
 def vector_search(query, top_k=5):
     collection = get_collection()
-    model = get_embedding_model()
-    query_embedding = model.encode([query], normalize_embeddings=True).tolist()
+    # input_type="query" vs. the index's "document" - Voyage embeds the two
+    # asymmetrically for better retrieval quality, so this must match what
+    # build_index() used or the vector space comparison is inconsistent.
+    query_embedding = embed_texts([query], input_type="query")
 
     results = collection.query(query_embeddings=query_embedding, n_results=top_k)
 

@@ -1,7 +1,8 @@
 requests
 pdfplumber
 chromadb
-sentence-transformers
+voyageai
 tiktoken
 groq
 python-dotenv
+streamlit
