@@ -7,3 +7,4 @@ groq
 python-dotenv
 fastapi
 uvicorn[standard]
+rank-bm25

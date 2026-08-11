@@ -1,0 +1,109 @@
+{
+  "results": [
+    {
+      "id": "corr-01",
+      "section_1961": "139",
+      "expected_2025_section": "263",
+      "refused": false,
+      "cited_expected": true,
+      "pass": true
+    },
+    {
+      "id": "corr-02",
+      "section_1961": "3",
+      "expected_2025_section": "4",
+      "refused": false,
+      "cited_expected": true,
+      "pass": true
+    },
+    {
+      "id": "corr-03",
+      "section_1961": "288",
+      "expected_2025_section": "515",
+      "refused": false,
+      "cited_expected": true,
+      "pass": true
+    },
+    {
+      "id": "corr-04",
+      "section_1961": "80",
+      "expected_2025_section": "121",
+      "refused": false,
+      "cited_expected": true,
+      "pass": true
+    },
+    {
+      "id": "corr-05",
+      "section_1961": "142",
+      "expected_2025_section": "268",
+      "refused": false,
+      "cited_expected": true,
+      "pass": true
+    },
+    {
+      "id": "corr-06",
+      "section_1961": "32",
+      "expected_2025_section": "33",
+      "refused": false,
+      "cited_expected": true,
+      "pass": true
+    },
+    {
+      "id": "corr-07",
+      "section_1961": "147",
+      "expected_2025_section": "279",
+      "refused": false,
+      "cited_expected": true,
+      "pass": true
+    },
+    {
+      "id": "corr-08",
+      "section_1961": "154",
+      "expected_2025_section": "287",
+      "refused": false,
+      "cited_expected": true,
+      "pass": true
+    },
+    {
+      "id": "corr-09",
+      "section_1961": "72",
+      "expected_2025_section": "416",
+      "refused": false,
+      "cited_expected": true,
+      "pass": true
+    },
+    {
+      "id": "corr-10",
+      "section_1961": "132A",
+      "expected_2025_section": "250",
+      "refused": false,
+      "cited_expected": true,
+      "pass": true
+    },
+    {
+      "id": "corr-11",
+      "section_1961": "144",
+      "expected_2025_section": "271",
+      "refused": false,
+      "cited_expected": true,
+      "pass": true
+    },
+    {
+      "id": "corr-12",
+      "section_1961": "28",
+      "expected_2025_section": "26",
+      "refused": false,
+      "cited_expected": true,
+      "pass": true
+    },
+    {
+      "id": "corr-13",
+      "section_1961": "45",
+      "expected_2025_section": "67",
+      "refused": false,
+      "cited_expected": true,
+      "pass": true
+    }
+  ],
+  "accuracy": 1.0
+}

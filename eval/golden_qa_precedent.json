@@ -1,0 +1,10 @@
+[
+  {"id": "prec-01", "question": "What is the definition of agricultural income under the 1961 Act?", "expected_case": "CIT v. Raja Benoy Kumar Sahs Roy"},
+  {"id": "prec-02", "question": "What happens to a Hindu Undivided Family's assessment status after a partition, under the 1961 Act?", "expected_case": "Gowli Buddanna v. CIT"},
+  {"id": "prec-03", "question": "How are co-owners of a property assessed for tax purposes under the 2025 Act?", "expected_case": "CIT v. Indira Balkrishna"},
+  {"id": "prec-04", "question": "What are the requirements for a firm to be assessed as a firm under section 184 of the 1961 Act?", "expected_case": "K.D. Kamath and Co. v. CIT"},
+  {"id": "prec-05", "question": "How is unexplained money credited to a person's account treated under the 1961 Act?", "expected_case": "Sumati Dayal v. CIT"},
+  {"id": "prec-06", "question": "What are the requirements for claiming a bad debt deduction under section 36 of the 1961 Act?", "expected_case": "T.R.F Ltd v. CIT"},
+  {"id": "prec-07", "question": "What kinds of business expenditure are deductible under section 37 of the 1961 Act?", "expected_case": "Empire Jute Co. Ltd v. CIT"},
+  {"id": "prec-08", "question": "Can an Assessing Officer recompute the book profit certified by a company's statutory auditors under section 115J of the 1961 Act?", "expected_case": "Apollo Tyres Ltd v. CIT"}
+]

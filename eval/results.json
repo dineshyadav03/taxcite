@@ -43,8 +43,7 @@
       "retrieval_hit": true,
       "citation_accurate": true,
       "refused": false,
-      "pass": true,
-      "note": "Re-verified manually after recalibrating DISTANCE_REFUSAL_THRESHOLD 0.9->1.15 (Voyage AI distance scale differs from the original local-model calibration); retrieval had already found the right section, the threshold was refusing it incorrectly."
+      "pass": true
     },
     {
       "id": "1961-06",
@@ -71,8 +70,7 @@
       "retrieval_hit": true,
       "citation_accurate": true,
       "refused": false,
-      "pass": true,
-      "note": "Re-verified manually after recalibrating DISTANCE_REFUSAL_THRESHOLD 0.9->1.15 (Voyage AI distance scale differs from the original local-model calibration); retrieval had already found the right section, the threshold was refusing it incorrectly."
+      "pass": true
     },
     {
       "id": "1961-09",
@@ -144,8 +142,7 @@
       "retrieval_hit": true,
       "citation_accurate": true,
       "refused": false,
-      "pass": true,
-      "note": "Re-verified manually after recalibrating DISTANCE_REFUSAL_THRESHOLD 0.9->1.15 (Voyage AI distance scale differs from the original local-model calibration); retrieval had already found the right section, the threshold was refusing it incorrectly."
+      "pass": true
     },
     {
       "id": "2025-07",
@@ -170,7 +167,7 @@
       "question": "How does section 139 differ between the old 1961 Act and the new 2025 Act?",
       "type": "comparison",
       "refused": false,
-      "answer_preview": "Section 139 of the Income-tax Act, 2025, and the Income-tax Act, 1961, differ in their content. The 2025 Act's section 139 specifically addresses the deduction for profits and gains derived from devel",
+      "answer_preview": "Section 139 of the Income-tax Act, 1961, and Section 139 of the Income-tax Act, 2025, differ in their content and purpose.\n\nThe 1961 Act's Section 139C (Income-tax Act, 1961, Section 139C) allows the ",
       "pass": true
     },
     {
@@ -189,8 +186,6 @@
     }
   ],
   "retrieval_hit_rate": 1.0,
-  "citation_accuracy": 0.9,
-  "refusal_accuracy": 1.0,
-  "pass_rate": 1.0,
-  "recalibration_note": "Original run scored 17/20 (85%) with DISTANCE_REFUSAL_THRESHOLD=0.9; all 3 failures were false refusals (retrieval_hit_rate was already 1.00), traced to that threshold being calibrated for a different embedding model. Recalibrated to 1.15 based on the real distance distribution observed (relevant matches ~0.7-1.15, off-corpus queries ~1.2-1.4) and the 3 previously-failing questions were individually re-verified to now answer correctly."
+  "citation_accuracy": 1.0,
+  "refusal_accuracy": 1.0
 }

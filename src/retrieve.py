@@ -169,20 +169,58 @@ def exact_section_lookup(query):
     return interleaved
 
 
+def _rrf_merge(rankings, k=60, top_k=10):
+    """Reciprocal Rank Fusion: combine several ranked chunk lists into one
+    by summing 1/(k + rank) across every ranker a chunk appears in - a
+    chunk one ranker missed but another found still surfaces; a chunk
+    both agree on ranks above one only one found. Standard hybrid-search
+    technique, k=60 is the commonly-used default. Earlier rankings in the
+    list win ties for which chunk dict is kept per id (matters here since
+    only the vector ranker's dicts carry a real `distance`)."""
+    scores = {}
+    chunks_by_id = {}
+    for ranking in rankings:
+        for rank, chunk in enumerate(ranking):
+            scores[chunk["id"]] = scores.get(chunk["id"], 0.0) + 1.0 / (k + rank + 1)
+            chunks_by_id.setdefault(chunk["id"], chunk)
+    ranked_ids = sorted(scores, key=lambda cid: scores[cid], reverse=True)
+    return [chunks_by_id[cid] for cid in ranked_ids[:top_k]]
+
+
 def search(query, top_k=5, embedding=None):
-    """Exact section-number hits first (if the query names one), then
-    vector search fills any remaining slots, deduplicated by id.
-    embedding lets a caller reuse an already-computed query vector
-    (e.g. Jury RAG embedding once for three jurors instead of three
-    times) instead of paying for a fresh Voyage call - only valid when
-    the query text is the same one the embedding was computed from."""
+    """Exact section-number hits first (if the query names one), then a
+    hybrid of vector similarity and BM25 keyword search fills any
+    remaining slots, deduplicated by id. embedding lets a caller reuse an
+    already-computed query vector (e.g. Jury RAG embedding once for three
+    jurors instead of three times) instead of paying for a fresh Voyage
+    call - only valid when the query text is the same one the embedding
+    was computed from.
+
+    Vector search's own top hit is always the first non-exact result:
+    every pattern's confidence-refusal gate reads chunks[0]["distance"],
+    and BM25 scores aren't a comparable distance (no chunk a pure keyword
+    search found gets to sit at position 0 and break that comparison with
+    None). The hybrid fusion below only improves recall in the remaining
+    slots, on top of that unchanged, calibrated gate."""
     exact = exact_section_lookup(query)
     if len(exact) >= top_k:
         return exact[:top_k]
 
     seen_ids = {c["id"] for c in exact}
     combined = list(exact)
-    for c in vector_search(query, top_k=top_k, embedding=embedding):
+
+    vec_hits = vector_search(query, top_k=max(top_k, 8), embedding=embedding)
+    if not vec_hits:
+        return combined
+
+    if vec_hits[0]["id"] not in seen_ids:
+        combined.append(vec_hits[0])
+        seen_ids.add(vec_hits[0]["id"])
+
+    from bm25_index import bm25_search
+
+    kw_hits = bm25_search(query, top_k=max(top_k, 8))
+    for c in _rrf_merge([vec_hits, kw_hits], top_k=top_k * 2):
         if len(combined) >= top_k:
             break
         if c["id"] not in seen_ids:

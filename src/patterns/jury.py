@@ -57,6 +57,7 @@ def answer(question, session_id=None):
         )
 
     valid_votes = [v for v in votes if v["section"] is not None]
+    refusal_count = len(_JURORS) - len(valid_votes)
     tally = Counter((v["act"], v["section"]) for v in valid_votes)
     winner, agreement_count = (tally.most_common(1)[0] if tally else (None, 0))
 
@@ -65,6 +66,7 @@ def answer(question, session_id=None):
         "votes": votes,
         "consensus": agreement_count >= 2,
         "agreement_count": agreement_count,
+        "refusal_count": refusal_count,
     }
 
     if agreement_count >= 2:
@@ -80,8 +82,18 @@ def answer(question, session_id=None):
             "trace": trace,
         }
 
-    if not valid_votes:
-        refusal = results[_JURORS[0]]
+    if refusal_count >= 2:
+        # A majority of jurors declining to answer is itself a majority
+        # signal, symmetric to 2-of-3 agreeing being treated as consensus
+        # - verified live via the golden-set eval: without this, a single
+        # juror's low-confidence outlier vote (1 of 3, with the other 2
+        # correctly refusing) was surfacing as a "disagreement" finding
+        # instead of an overall refusal, on a genuinely out-of-corpus
+        # question (a GST rate question - GST is a separate Act this
+        # corpus doesn't cover). 2-or-3-of-3 refusing now refuses overall.
+        refusing_pattern = next(name for name, v in zip(_JURORS, votes) if v["section"] is None)
+        refusal = results[refusing_pattern]
+        trace["majority_refused"] = True
         return {
             "answer": refusal["answer"],
             "chunks": refusal.get("chunks", []),

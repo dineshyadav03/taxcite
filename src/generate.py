@@ -72,7 +72,7 @@ def llm(user_prompt, system_prompt=SYSTEM_PROMPT, json_mode=False, max_tokens=No
     match to the whole exemptions section)."""
     max_tokens = max_tokens or OLLAMA_NUM_PREDICT
     if GROQ_API_KEY:
-        from groq import BadRequestError, RateLimitError
+        from groq import APIConnectionError, BadRequestError, RateLimitError
 
         client = _get_groq()
         kwargs = {}
@@ -92,7 +92,14 @@ def llm(user_prompt, system_prompt=SYSTEM_PROMPT, json_mode=False, max_tokens=No
                 )
                 text = response.choices[0].message.content
                 break
-            except RateLimitError:
+            except (RateLimitError, APIConnectionError):
+                # APIConnectionError (covers APITimeoutError) verified live
+                # during eval expansion - two separate patterns hit a
+                # transient network timeout back-to-back and crashed
+                # outright instead of retrying, since only RateLimitError
+                # was being caught here. A connection blip deserves the
+                # same backoff-and-retry treatment as a rate limit, not a
+                # hard failure on the first bad network moment.
                 if attempt == GROQ_MAX_RETRIES - 1:
                     raise
                 time.sleep(2**attempt)
@@ -142,16 +149,40 @@ def parse_json(text):
     raise ValueError(f"LLM did not return parseable JSON: {text[:200]!r}")
 
 
+# Groq's free tier caps llama-3.1-8b-instant at a hard 6,000-token
+# tokens-per-minute ceiling - a single oversized prompt is rejected
+# outright (413), not queued or retried. Verified live twice: once in
+# Correspondence RAG's own prompt construction (a per-section chunk cap
+# fixed it there), and again here in graph_rag.py after hybrid retrieval
+# (see retrieve.py) started filling every pattern's chunk slots more
+# reliably - more real recall means bigger prompts more often, which is
+# exactly the failure mode a shared budget in the one function every
+# pattern's final generation call goes through can prevent centrally,
+# instead of re-discovering and re-fixing it pattern by pattern.
+# ~4 characters/token is a conservative average for English legal prose
+# (real tiktoken counts run a bit better than this on purpose, for
+# margin); 16,000 chars leaves headroom for the system prompt, the
+# question, and the model's own output tokens within the same allowance.
+_MAX_CONTEXT_CHARS = 16000
+
+
 def build_user_prompt(question, chunks, history=None):
     context_blocks = []
+    budget = _MAX_CONTEXT_CHARS
     for c in chunks:
+        if budget <= 0:
+            break
         m = c["metadata"]
         label = m.get("act_title", "Unknown")
         if m.get("section"):
             label += f", Section {m['section']}"
         if m.get("modality") == "table":
             label += " (table)"
-        context_blocks.append(f"[{label}]\n{c['text']}")
+        block = f"[{label}]\n{c['text']}"
+        if len(block) > budget:
+            block = block[:budget] + "..."
+        context_blocks.append(block)
+        budget -= len(block)
     context = "\n\n---\n\n".join(context_blocks)
     prompt = f"Retrieved sections:\n\n{context}\n\n---\n\n"
     if history:
