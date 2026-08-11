@@ -52,6 +52,17 @@ def get_cases_collection(persist_dir=None):
     return _get("income_tax_cases", persist_dir)
 
 
+def embed_queries(queries):
+    """Batch-embed several distinct query texts in ONE Voyage call instead
+    of one call per query - the free tier throttles by request count (3
+    RPM), not by text count, so batching several genuinely-different
+    queries (e.g. Branched RAG's per-Act sub-questions) into one call
+    matters exactly as much as reusing one embedding across identical
+    queries does (see jury.py). Order-preserving: result[i] is queries[i]'s
+    embedding."""
+    return embed_texts(list(queries), input_type="query")
+
+
 def embed_query(query):
     """One Voyage call for a query embedding, reusable across collections.
     Patterns that search multiple collections (multi-modal) or reuse an

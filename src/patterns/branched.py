@@ -6,6 +6,13 @@ Acts' sections in context, but one vector query returns whichever scores
 higher. Decomposition turns it into per-Act sub-questions, each of which
 retrieves independently (and each sub-question naming a section number
 gets the exact-lookup fast path for free, since retrieval is shared).
+
+Sub-questions are batch-embedded in one Voyage call rather than one call
+per sub-question - verified live: this was the actual cause of Branched's
+~87s latency (up to 3 separate embedding calls under the free tier's 3
+requests/minute throttle), same root cause as Jury RAG's slowness, just
+with genuinely different embeddings this time (each sub-question asks
+something different) rather than one embedding needlessly recomputed.
 """
 from generate import (
     DISTANCE_REFUSAL_THRESHOLD,
@@ -13,7 +20,7 @@ from generate import (
     build_user_prompt,
     llm,
 )
-from retrieve import search
+from retrieve import embed_queries, search
 
 _DECOMPOSE_SYSTEM = """You decompose a question about Indian income tax law into 2-3 focused sub-questions that can each be answered from a single statute lookup. Reply with JSON: {"sub_questions": ["...", "..."]}. If the question is already atomic, return it as the only sub-question. When the question compares the Income-tax Act 1961 and the Income-tax Act 2025, make one sub-question per Act, each explicitly naming its Act."""
 
@@ -36,9 +43,11 @@ def answer(question, session_id=None):
         subs = [question]
     trace["sub_questions"] = subs
 
+    sub_embeddings = embed_queries(subs)
+
     merged, seen = [], set()
-    for sub in subs:
-        hits = search(sub, top_k=_PER_BRANCH_K)
+    for sub, sub_embedding in zip(subs, sub_embeddings):
+        hits = search(sub, top_k=_PER_BRANCH_K, embedding=sub_embedding)
         trace["per_branch_hits"].append(
             [
                 {"section": c["metadata"].get("section"), "act": c["metadata"].get("act_id"), "distance": round(c["distance"], 3)}
