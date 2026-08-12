@@ -8,3 +8,5 @@ venv/
 .pytest_cache/
 .DS_Store
 data/raw/*.pdf
+data/cache.db
+data/cache_chroma/

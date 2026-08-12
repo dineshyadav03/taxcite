@@ -12,6 +12,7 @@ import re
 import sys
 import time
 import uuid
+from datetime import datetime, timezone
 from pathlib import Path
 
 from fastapi import FastAPI
@@ -20,8 +21,18 @@ from pydantic import BaseModel
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))
 
+import cache  # noqa: E402
 import memory  # noqa: E402
 from patterns import PATTERN_INFO, PATTERNS, run  # noqa: E402
+
+# Memory RAG's whole mechanism is answering differently for the same
+# question text depending on conversation history - caching by
+# (pattern, question) alone would serve a stale answer from an unrelated
+# session, which is worse than no cache at all. Every other pattern's
+# answer for a given question is session-independent, so caching them is
+# safe (verified by construction: only memory_rag.py reads session
+# history to change its retrieval query).
+_UNCACHEABLE_PATTERNS = {"memory"}
 
 app = FastAPI(title="TaxCite", docs_url=None, redoc_url=None)
 
@@ -86,6 +97,15 @@ def ask(req: AskRequest):
             "session_id": session_id,
         }
 
+    cacheable = req.pattern not in _UNCACHEABLE_PATTERNS
+    cache_embedding = None
+    if cacheable:
+        cached, cache_embedding = cache.get(req.pattern, question)
+        if cached is not None:
+            cached["elapsed_seconds"] = round(time.perf_counter() - t0, 1)
+            cached["session_id"] = session_id
+            return cached
+
     try:
         result = run(req.pattern, question, session_id=session_id)
     except ValueError as e:
@@ -111,7 +131,7 @@ def ask(req: AskRequest):
             }
         )
 
-    return {
+    response = {
         "answer": result["answer"],
         "refused": result["refused"],
         "pattern": result.get("pattern", req.pattern),
@@ -120,6 +140,11 @@ def ask(req: AskRequest):
         "elapsed_seconds": round(time.perf_counter() - t0, 1),
         "session_id": session_id,
     }
+
+    if cacheable:
+        cache.put(req.pattern, question, response, datetime.now(timezone.utc).isoformat(), embedding=cache_embedding)
+
+    return response
 
 
 @app.post("/api/clear_memory")

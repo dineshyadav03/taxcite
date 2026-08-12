@@ -1,3 +1,10 @@
+---
+title: TaxCite
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
 # TaxCite
 
 A citation-grounded retrieval-augmented generation (RAG) system over Indian income tax law. Every answer traces back to an exact Act, chapter, and section of the Income-tax Act, 2025 or the superseded Income-tax Act, 1961 — and the system implements all ten commonly-cited RAG architectural patterns, plus three original patterns built on the same substrate, as selectable, independently verifiable pipelines over the same corpus, rather than picking one and stopping.
@@ -275,6 +282,15 @@ python src/embed.py --tables          # build the table vector index
 python src/graph.py                   # build the cross-reference graph
 python -m uvicorn server:app --port 8600
 ```
+
+**Or via Docker** (what the Hugging Face Spaces deployment runs): `chroma_db/` ships pre-built and committed rather than rebuilt at image-build time, since a full build takes ~90 minutes under Voyage's free-tier throttle - no point re-running it on every deploy when the vectors don't change.
+
+```bash
+docker build -t taxcite .
+docker run -p 7860:7860 --env-file .env taxcite
+```
+
+Verified live: built and run locally, `/api/patterns` and `/api/ask` both confirmed working against the containerized app before ever deploying anywhere.
 
 ## Cost and infrastructure
 
