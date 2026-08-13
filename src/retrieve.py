@@ -189,8 +189,9 @@ def _rrf_merge(rankings, k=60, top_k=10):
 
 def search(query, top_k=5, embedding=None):
     """Exact section-number hits first (if the query names one), then a
-    hybrid of vector similarity and BM25 keyword search fills any
-    remaining slots, deduplicated by id. embedding lets a caller reuse an
+    hybrid of vector similarity and BM25 keyword search, reranked by
+    Voyage's hosted rerank-2-lite (see rerank.py), fills any remaining
+    slots, deduplicated by id. embedding lets a caller reuse an
     already-computed query vector (e.g. Jury RAG embedding once for three
     jurors instead of three times) instead of paying for a fresh Voyage
     call - only valid when the query text is the same one the embedding
@@ -220,12 +221,24 @@ def search(query, top_k=5, embedding=None):
     from bm25_index import bm25_search
 
     kw_hits = bm25_search(query, top_k=max(top_k, 8))
-    for c in _rrf_merge([vec_hits, kw_hits], top_k=top_k * 2):
+    fused = _rrf_merge([vec_hits, kw_hits], top_k=top_k * 3)
+    candidates = [c for c in fused if c["id"] not in seen_ids]
+
+    if candidates:
+        from rerank import rerank
+
+        try:
+            candidates = rerank(query, candidates, top_k=len(candidates))
+        except Exception:
+            # a reranker outage shouldn't take down every pattern's
+            # retrieval - fall back to the RRF order rather than crash.
+            pass
+
+    for c in candidates:
         if len(combined) >= top_k:
             break
-        if c["id"] not in seen_ids:
-            combined.append(c)
-            seen_ids.add(c["id"])
+        combined.append(c)
+        seen_ids.add(c["id"])
     return combined
 
 

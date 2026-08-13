@@ -10,6 +10,7 @@ Run: .venv/Scripts/python.exe -m uvicorn server:app --port 8600
 """
 import re
 import sys
+import threading
 import time
 import uuid
 from datetime import datetime, timezone
@@ -23,7 +24,19 @@ sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))
 
 import cache  # noqa: E402
 import memory  # noqa: E402
+from guardrails import scan_chunks  # noqa: E402
 from patterns import PATTERN_INFO, PATTERNS, run  # noqa: E402
+
+# Voyage's free tier throttles to 3 requests/minute at the account level -
+# that ceiling exists regardless of how many concurrent users this app
+# has, so unbounded concurrent requests would just pile up into raw 429s
+# from the provider instead of a clear "busy" response from this app.
+# This is backpressure, not a claim about real load-tested capacity -
+# actual concurrent-load testing wouldn't prove anything new here, since
+# the free-tier ceiling is already the known, documented bottleneck.
+_MAX_CONCURRENT_REQUESTS = 3
+_request_semaphore = threading.Semaphore(_MAX_CONCURRENT_REQUESTS)
+_SEMAPHORE_WAIT_SECONDS = 2
 
 # Memory RAG's whole mechanism is answering differently for the same
 # question text depending on conversation history - caching by
@@ -106,12 +119,28 @@ def ask(req: AskRequest):
             cached["session_id"] = session_id
             return cached
 
+    acquired = _request_semaphore.acquire(timeout=_SEMAPHORE_WAIT_SECONDS)
+    if not acquired:
+        return {
+            "error": (
+                f"System is busy (more than {_MAX_CONCURRENT_REQUESTS} requests in flight - "
+                "the hosted embedding API is throttled to 3/minute on the free tier). "
+                "Please retry shortly."
+            )
+        }
     try:
         result = run(req.pattern, question, session_id=session_id)
     except ValueError as e:
         return {"error": str(e)}
     except Exception as e:  # surface upstream API failures readably, don't 500
         return {"error": f"{type(e).__name__}: {e}"}
+    finally:
+        _request_semaphore.release()
+
+    injection_flags = scan_chunks(result.get("chunks", []))
+    if injection_flags:
+        # Flag, don't block - see src/guardrails.py for why.
+        print(f"[guardrails] possible prompt injection in retrieved content: {injection_flags}")
 
     sources, seen = [], set()
     for c in result.get("chunks", []):

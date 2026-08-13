@@ -13,27 +13,10 @@ and a grading call, and if two well-formed retrievals both fail grading,
 the honest output is a refusal, not a third attempt.
 """
 from generate import REFUSAL_MESSAGE, build_user_prompt, llm
+from grading import grade_chunks, grading_trace_entry
 from retrieve import search
 
-_GRADE_SYSTEM = """You grade retrieved statute excerpts for relevance to a question. For each excerpt decide: does it contain information that helps answer this specific question? Reply with JSON: {"grades": [{"index": 0, "relevant": true/false, "reason": "..."}], "better_query": "an improved search query if most excerpts are irrelevant, else null"}."""
-
 _MIN_RELEVANT = 2
-
-
-def _grade(question, chunks):
-    listing = "\n\n".join(
-        f"[{i}] ({c['metadata'].get('act_title')}, Section {c['metadata'].get('section')})\n{c['text'][:500]}"
-        for i, c in enumerate(chunks)
-    )
-    verdict = llm(
-        f"Question: {question}\n\nExcerpts:\n{listing}",
-        system_prompt=_GRADE_SYSTEM,
-        json_mode=True,
-        max_tokens=400,
-    )
-    grades = {g["index"]: g for g in verdict.get("grades", []) if isinstance(g, dict) and "index" in g}
-    relevant = [c for i, c in enumerate(chunks) if grades.get(i, {}).get("relevant")]
-    return relevant, grades, verdict.get("better_query")
 
 
 def answer(question, session_id=None, embedding=None):
@@ -41,16 +24,8 @@ def answer(question, session_id=None, embedding=None):
     chunks = search(question, top_k=6, embedding=embedding)
 
     try:
-        relevant, grades, better_query = _grade(question, chunks)
-        trace["rounds"].append(
-            {
-                "query": question,
-                "graded": [
-                    {"section": c["metadata"].get("section"), "act": c["metadata"].get("act_id"), "relevant": grades.get(i, {}).get("relevant", False)}
-                    for i, c in enumerate(chunks)
-                ],
-            }
-        )
+        relevant, grades, better_query = grade_chunks(question, chunks)
+        trace["rounds"].append(grading_trace_entry(question, chunks, grades))
     except ValueError:
         # grader output unparseable - degrade to Simple RAG behavior
         relevant, better_query = chunks, None
@@ -60,16 +35,8 @@ def answer(question, session_id=None, embedding=None):
         trace["rewritten_query"] = better_query
         retry_chunks = search(better_query, top_k=6)
         try:
-            retry_relevant, retry_grades, _ = _grade(question, retry_chunks)
-            trace["rounds"].append(
-                {
-                    "query": better_query,
-                    "graded": [
-                        {"section": c["metadata"].get("section"), "act": c["metadata"].get("act_id"), "relevant": retry_grades.get(i, {}).get("relevant", False)}
-                        for i, c in enumerate(retry_chunks)
-                    ],
-                }
-            )
+            retry_relevant, retry_grades, _ = grade_chunks(question, retry_chunks)
+            trace["rounds"].append(grading_trace_entry(question, retry_chunks, retry_grades))
         except ValueError:
             retry_relevant = []
         seen = {c["id"] for c in relevant}

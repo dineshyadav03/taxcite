@@ -15,6 +15,7 @@ from generate import (
     build_user_prompt,
     llm,
 )
+from grading import grade_chunks, grading_trace_entry
 from retrieve import search
 
 _REWRITE_SYSTEM = """You rewrite a follow-up question into a fully standalone question, using the conversation history to resolve pronouns and references. Reply with JSON: {"standalone_question": "..."}. If the question is already standalone, return it unchanged."""
@@ -45,7 +46,18 @@ def answer(question, session_id=None):
         memory.add_turn(session_id, question, REFUSAL_MESSAGE)
         return {"answer": REFUSAL_MESSAGE, "chunks": chunks, "refused": True, "trace": trace}
 
-    prompt = build_user_prompt(retrieval_question, chunks, history=history or None)
+    try:
+        relevant, grades, _ = grade_chunks(retrieval_question, chunks)
+        trace["grading"] = grading_trace_entry(retrieval_question, chunks, grades)
+    except ValueError:
+        relevant = chunks
+        trace["grader_failed"] = True
+
+    if not relevant:
+        memory.add_turn(session_id, question, REFUSAL_MESSAGE)
+        return {"answer": REFUSAL_MESSAGE, "chunks": chunks, "refused": True, "trace": trace}
+
+    prompt = build_user_prompt(retrieval_question, relevant, history=history or None)
     answer_text = llm(prompt)
     memory.add_turn(session_id, question, answer_text)
-    return {"answer": answer_text, "chunks": chunks, "refused": False, "trace": trace}
+    return {"answer": answer_text, "chunks": relevant, "refused": False, "trace": trace}

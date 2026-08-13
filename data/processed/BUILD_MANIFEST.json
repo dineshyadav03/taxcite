@@ -1,0 +1,24 @@
+{
+  "built_at": "2026-08-12T11:52:20.268865+00:00",
+  "sources": [
+    {
+      "id": "itact2025",
+      "url": "https://resource.cdn.icai.org/87647dtc-aps2139-inceome-tax-act-2025.pdf",
+      "local_path": "data/raw/itact2025.pdf",
+      "sha256": "7acfb16fd7f3db8b4f85fc532b6d6924478ef86fa2e5b7683d282f8825f8017c",
+      "size_bytes": 6428678
+    },
+    {
+      "id": "itact1961",
+      "url": "https://www.indiacode.nic.in/bitstream/123456789/2435/1/a1961-43.pdf",
+      "local_path": "data/raw/itact1961.pdf",
+      "sha256": "428b1b3cf2c3c09f22014d488f60eb0aebe209fffbf63ae6430d4a6644bd55eb",
+      "size_bytes": 6232336
+    }
+  ],
+  "chunk_counts": {
+    "itact1961.jsonl": 707,
+    "itact2025.jsonl": 536,
+    "tables.jsonl": 165
+  }
+}

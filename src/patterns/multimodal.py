@@ -17,6 +17,7 @@ from generate import (
     build_user_prompt,
     llm,
 )
+from grading import grade_chunks, grading_trace_entry
 from retrieve import embed_query, exact_section_lookup, table_search, vector_search
 
 _PROSE_K = 4
@@ -50,6 +51,17 @@ def answer(question, session_id=None):
     if not relevant:
         return {"answer": REFUSAL_MESSAGE, "chunks": merged, "refused": True, "trace": trace}
 
-    prompt = build_user_prompt(question, relevant[:7])
+    candidates = relevant[:7]
+    try:
+        graded, grades, _ = grade_chunks(question, candidates)
+        trace["grading"] = grading_trace_entry(question, candidates, grades)
+    except ValueError:
+        graded = candidates
+        trace["grader_failed"] = True
+
+    if not graded:
+        return {"answer": REFUSAL_MESSAGE, "chunks": candidates, "refused": True, "trace": trace}
+
+    prompt = build_user_prompt(question, graded)
     answer_text = llm(prompt)
-    return {"answer": answer_text, "chunks": relevant[:7], "refused": False, "trace": trace}
+    return {"answer": answer_text, "chunks": graded, "refused": False, "trace": trace}

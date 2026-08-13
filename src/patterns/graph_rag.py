@@ -21,6 +21,7 @@ from generate import (
     llm,
 )
 import graph
+from grading import grade_chunks, grading_trace_entry
 from retrieve import fetch_section, search
 
 _SEED_K = 4       # vector/exact hits to seed from
@@ -64,6 +65,17 @@ def answer(question, session_id=None, embedding=None):
         if followed:
             trace["expansions"][f"{act_id}::{section}"] = followed
 
-    prompt = build_user_prompt(question, merged[:_MAX_CONTEXT])
+    candidates = merged[:_MAX_CONTEXT]
+    try:
+        relevant, grades, _ = grade_chunks(question, candidates)
+        trace["grading"] = grading_trace_entry(question, candidates, grades)
+    except ValueError:
+        relevant = candidates
+        trace["grader_failed"] = True
+
+    if not relevant:
+        return {"answer": REFUSAL_MESSAGE, "chunks": candidates, "refused": True, "trace": trace}
+
+    prompt = build_user_prompt(question, relevant)
     answer_text = llm(prompt)
-    return {"answer": answer_text, "chunks": merged[:_MAX_CONTEXT], "refused": False, "trace": trace}
+    return {"answer": answer_text, "chunks": relevant, "refused": False, "trace": trace}
