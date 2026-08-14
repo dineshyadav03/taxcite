@@ -41,17 +41,33 @@ def answer(question, session_id=None):
         for c in tables
     ]
 
+    # Prose is held to the same confidence bar every other pattern uses.
+    # Tables get a wider one: serialized pipe-delimited rows sit farther
+    # from a query embedding than prose describing the same provision,
+    # even when genuinely relevant, so the standard 1.15 under-retrieves
+    # real table matches. That buffer must stay scoped to tables only -
+    # verified live: applying it to prose too let an off-corpus question
+    # ("GST rate on restaurant services", distance 1.223) slip past the
+    # gate on its prose hit, which the grader then correctly rejected,
+    # but the borderline TABLE hit for the same section (distance 1.251,
+    # also only passable under the loosened bar) got graded relevant -
+    # a bare numeric rate table has little context for the grader to
+    # judge relevance from, so the wider threshold needs prose's stricter
+    # bar to stay in place as a first line of defense, not be loosened
+    # right along with it.
+    table_hits = [t for t in tables if t["distance"] <= DISTANCE_REFUSAL_THRESHOLD + 0.15]
+    prose_hits_relevant = [p for p in prose if p["distance"] <= DISTANCE_REFUSAL_THRESHOLD]
+
     merged, seen = [], set()
-    for c in exact + prose + [t for t in tables if t["distance"] <= DISTANCE_REFUSAL_THRESHOLD + 0.15]:
+    for c in exact + prose_hits_relevant + table_hits:
         if c["id"] not in seen:
             merged.append(c)
             seen.add(c["id"])
 
-    relevant = [c for c in merged if c["distance"] <= DISTANCE_REFUSAL_THRESHOLD + 0.15]
-    if not relevant:
-        return {"answer": REFUSAL_MESSAGE, "chunks": merged, "refused": True, "trace": trace}
+    if not merged:
+        return {"answer": REFUSAL_MESSAGE, "chunks": exact + prose + tables, "refused": True, "trace": trace}
 
-    candidates = relevant[:7]
+    candidates = merged[:7]
     try:
         graded, grades, _ = grade_chunks(question, candidates)
         trace["grading"] = grading_trace_entry(question, candidates, grades)
