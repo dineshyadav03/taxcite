@@ -19,7 +19,7 @@ from generate import (
     build_user_prompt,
     llm,
 )
-from retrieve import _query_collection, exact_section_lookup, get_collection
+from retrieve import _query_collection, exact_section_lookup, get_collection, vector_search
 
 _HYDE_SYSTEM = """Write a short hypothetical passage (60-100 words) in the style of an Indian Income-tax Act section that would answer the user's question. Statutory register: "Every person...", "shall be chargeable...", "subject to the provisions of...". Do not cite real section numbers. Output only the passage."""
 
@@ -32,6 +32,31 @@ def answer(question, session_id=None):
         trace["used_exact_path"] = True
         chunks = exact[:5]
     else:
+        # Domain-relevance gate on the RAW question first, before ever
+        # drafting a hypothetical. _HYDE_SYSTEM always writes in the
+        # corpus's own statutory register ("shall be chargeable...",
+        # "subject to the provisions of...") regardless of whether the
+        # question has anything to do with tax law - verified live: a
+        # chocolate-chip-cookie-recipe question produced a fake-but-
+        # statute-shaped passage that embedded at distance 1.022,
+        # comfortably under DISTANCE_REFUSAL_THRESHOLD, purely from
+        # linguistic style rather than topic. That collapses the whole
+        # "out of scope" signal, since any input becomes genre-matching
+        # text before comparison. The raw question's own embedding
+        # doesn't have this problem (it's what the threshold was
+        # originally calibrated against) - verified live on both HyDE's
+        # own founding example ("do I pay tax on money my friend
+        # transferred me?", raw distance 0.936) and every golden-set
+        # question HyDE previously got wrong (all measured well under
+        # threshold on raw distance too, so this gate doesn't cost any of
+        # HyDE's genuine value for awkwardly-phrased-but-on-topic
+        # questions - it only catches genuinely off-corpus ones). Costs
+        # one extra Voyage embedding call per non-exact HyDE query.
+        raw_chunks = vector_search(question, top_k=1)
+        trace["raw_distance"] = round(raw_chunks[0]["distance"], 3) if raw_chunks else None
+        if not raw_chunks or raw_chunks[0]["distance"] > DISTANCE_REFUSAL_THRESHOLD:
+            return {"answer": REFUSAL_MESSAGE, "chunks": raw_chunks, "refused": True, "trace": trace}
+
         hypothetical = llm(question, system_prompt=_HYDE_SYSTEM, max_tokens=200)
         trace["hypothetical"] = hypothetical
         hyde_embedding = embed_texts([hypothetical], input_type="document")[0]

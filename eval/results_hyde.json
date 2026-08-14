@@ -176,18 +176,18 @@
       "id": "refuse-01",
       "question": "What is the recipe for chocolate chip cookies?",
       "type": "refusal",
-      "refused": false,
-      "pass": false
+      "refused": true,
+      "pass": true
     },
     {
       "id": "refuse-02",
       "question": "What is the GST rate on restaurant services?",
       "type": "refusal",
-      "refused": false,
-      "pass": false
+      "refused": true,
+      "pass": true
     }
   ],
   "retrieval_hit_rate": 0.7777777777777778,
   "citation_accuracy": 0.6666666666666666,
-  "refusal_accuracy": 0.0
+  "refusal_accuracy": 1.0
 }
