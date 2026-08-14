@@ -92,7 +92,13 @@ def run(pattern_name):
         qtype = item["query_type"]
         row = {"id": item["id"], "question": item["question"], "type": qtype}
 
-        result = run_pattern(pattern_name, item["question"])
+        # Each golden question is independent, not a real conversation - a
+        # shared/default session_id here would let Memory RAG's history-
+        # aware query rewrite see prior, unrelated golden questions as
+        # "conversation history" and garble retrieval for everything after
+        # the first question. Verified live: 2025-01 passes clean on its
+        # own but failed when run through the shared-session eval loop.
+        result = run_pattern(pattern_name, item["question"], session_id=f"eval-{item['id']}")
 
         if qtype == "refusal":
             row["refused"] = result["refused"]

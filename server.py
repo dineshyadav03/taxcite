@@ -23,7 +23,9 @@ from pydantic import BaseModel
 sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))
 
 import cache  # noqa: E402
+import generate  # noqa: E402
 import memory  # noqa: E402
+import observability  # noqa: E402
 from guardrails import scan_chunks  # noqa: E402
 from patterns import PATTERN_INFO, PATTERNS, run  # noqa: E402
 
@@ -117,6 +119,20 @@ def ask(req: AskRequest):
         if cached is not None:
             cached["elapsed_seconds"] = round(time.perf_counter() - t0, 1)
             cached["session_id"] = session_id
+            observability.log_request(
+                {
+                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                    "pattern": req.pattern,
+                    "question": question,
+                    "refused": cached.get("refused"),
+                    "cache_hit": True,
+                    "latency_seconds": cached["elapsed_seconds"],
+                    "prompt_tokens": 0,
+                    "completion_tokens": 0,
+                    "estimated_cost_usd": 0.0,
+                    "distances": [],
+                }
+            )
             return cached
 
     acquired = _request_semaphore.acquire(timeout=_SEMAPHORE_WAIT_SECONDS)
@@ -128,6 +144,7 @@ def ask(req: AskRequest):
                 "Please retry shortly."
             )
         }
+    generate.reset_usage()
     try:
         result = run(req.pattern, question, session_id=session_id)
     except ValueError as e:
@@ -172,6 +189,22 @@ def ask(req: AskRequest):
 
     if cacheable:
         cache.put(req.pattern, question, response, datetime.now(timezone.utc).isoformat(), embedding=cache_embedding)
+
+    usage = generate.get_usage_totals()
+    observability.log_request(
+        {
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "pattern": req.pattern,
+            "question": question,
+            "refused": result["refused"],
+            "cache_hit": False,
+            "latency_seconds": response["elapsed_seconds"],
+            "prompt_tokens": usage["prompt_tokens"],
+            "completion_tokens": usage["completion_tokens"],
+            "estimated_cost_usd": observability.estimate_cost(usage["prompt_tokens"], usage["completion_tokens"]),
+            "distances": [round(c.get("distance", 0.0), 3) for c in result.get("chunks", [])],
+        }
+    )
 
     return response
 

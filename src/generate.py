@@ -13,6 +13,7 @@ RAG pipeline, kept intact because eval/run_eval.py scores against it.
 import json
 import os
 import re
+import threading
 import time
 
 from dotenv import load_dotenv
@@ -20,6 +21,34 @@ from dotenv import load_dotenv
 from retrieve import search
 
 load_dotenv()
+
+# Per-request token accounting for src/observability.py - thread-local so
+# concurrent requests (server.py's semaphore allows up to 3 in flight)
+# don't add each other's tokens together. A caller brackets one logical
+# request with reset_usage() then get_usage_totals(); every llm() call in
+# between (a pattern can make several - grading, retry, generation) adds
+# to the same running total.
+_usage_local = threading.local()
+
+
+def reset_usage():
+    _usage_local.calls = []
+
+
+def _record_usage(usage):
+    if not hasattr(_usage_local, "calls"):
+        _usage_local.calls = []
+    _usage_local.calls.append(usage)
+
+
+def get_usage_totals():
+    calls = getattr(_usage_local, "calls", [])
+    return {
+        "prompt_tokens": sum(c["prompt_tokens"] for c in calls),
+        "completion_tokens": sum(c["completion_tokens"] for c in calls),
+        "total_tokens": sum(c["total_tokens"] for c in calls),
+        "call_count": len(calls),
+    }
 
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
 GROQ_MODEL = os.environ.get("GROQ_MODEL", "llama-3.1-8b-instant")
@@ -91,6 +120,14 @@ def llm(user_prompt, system_prompt=SYSTEM_PROMPT, json_mode=False, max_tokens=No
                     **kwargs,
                 )
                 text = response.choices[0].message.content
+                if response.usage:
+                    _record_usage(
+                        {
+                            "prompt_tokens": response.usage.prompt_tokens,
+                            "completion_tokens": response.usage.completion_tokens,
+                            "total_tokens": response.usage.total_tokens,
+                        }
+                    )
                 break
             except (RateLimitError, APIConnectionError):
                 # APIConnectionError (covers APITimeoutError) verified live
