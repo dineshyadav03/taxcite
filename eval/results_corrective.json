@@ -1,0 +1,193 @@
+{
+  "pattern": "corrective",
+  "results": [
+    {
+      "id": "1961-01",
+      "question": "Who is required to file an income tax return under the Income-tax Act, 1961?",
+      "type": "topical",
+      "retrieval_hit": true,
+      "citation_accurate": true,
+      "refused": false,
+      "pass": true
+    },
+    {
+      "id": "1961-02",
+      "question": "Which section of the Income-tax Act, 1961 covers jurisdiction of Assessing Officers?",
+      "type": "topical",
+      "retrieval_hit": true,
+      "citation_accurate": true,
+      "refused": false,
+      "pass": true
+    },
+    {
+      "id": "1961-03",
+      "question": "What does section 271A of the Income-tax Act, 1961 say about failure to maintain books of account?",
+      "type": "exact_section",
+      "retrieval_hit": true,
+      "citation_accurate": true,
+      "refused": false,
+      "pass": true
+    },
+    {
+      "id": "1961-04",
+      "question": "How are royalties for literary or artistic work taxed under the Income-tax Act, 1961?",
+      "type": "topical",
+      "retrieval_hit": true,
+      "citation_accurate": true,
+      "refused": false,
+      "pass": true
+    },
+    {
+      "id": "1961-05",
+      "question": "What is the special provision relating to incomes of political parties under the 1961 Act?",
+      "type": "topical",
+      "retrieval_hit": true,
+      "citation_accurate": true,
+      "refused": false,
+      "pass": true
+    },
+    {
+      "id": "1961-06",
+      "question": "Which section of the Income-tax Act, 1961 provides for a rebate in computing income-tax?",
+      "type": "topical",
+      "retrieval_hit": true,
+      "citation_accurate": false,
+      "refused": false,
+      "pass": false
+    },
+    {
+      "id": "1961-07",
+      "question": "What power do tax authorities have to call for information under section 133 of the 1961 Act?",
+      "type": "exact_section",
+      "retrieval_hit": true,
+      "citation_accurate": true,
+      "refused": false,
+      "pass": true
+    },
+    {
+      "id": "1961-08",
+      "question": "What is the Site Restoration Fund provision under the Income-tax Act, 1961?",
+      "type": "topical",
+      "retrieval_hit": true,
+      "citation_accurate": true,
+      "refused": false,
+      "pass": true
+    },
+    {
+      "id": "1961-09",
+      "question": "Which section of the Income-tax Act, 1961 deals with stay of proceedings in pursuance of a certificate?",
+      "type": "topical",
+      "retrieval_hit": true,
+      "citation_accurate": true,
+      "refused": false,
+      "pass": true
+    },
+    {
+      "id": "1961-10",
+      "question": "What does section 292 of the Income-tax Act, 1961 say about cognizance of offences?",
+      "type": "exact_section",
+      "retrieval_hit": true,
+      "citation_accurate": true,
+      "refused": false,
+      "pass": true
+    },
+    {
+      "id": "2025-01",
+      "question": "What is the cash transaction limit a person can receive in a day under the Income-tax Act, 2025?",
+      "type": "topical",
+      "retrieval_hit": true,
+      "citation_accurate": true,
+      "refused": false,
+      "pass": true
+    },
+    {
+      "id": "2025-02",
+      "question": "How should total income be rounded off for tax computation under the Income-tax Act, 2025?",
+      "type": "topical",
+      "retrieval_hit": true,
+      "citation_accurate": true,
+      "refused": false,
+      "pass": true
+    },
+    {
+      "id": "2025-03",
+      "question": "How is income from insurance business computed under the Income-tax Act, 2025?",
+      "type": "topical",
+      "retrieval_hit": true,
+      "citation_accurate": true,
+      "refused": false,
+      "pass": true
+    },
+    {
+      "id": "2025-04",
+      "question": "How are arrears of rent taxed under the Income-tax Act, 2025?",
+      "type": "topical",
+      "retrieval_hit": true,
+      "citation_accurate": true,
+      "refused": false,
+      "pass": true
+    },
+    {
+      "id": "2025-05",
+      "question": "What does section 515 of the Income-tax Act, 2025 say about authorised representatives?",
+      "type": "exact_section",
+      "retrieval_hit": true,
+      "citation_accurate": true,
+      "refused": false,
+      "pass": true
+    },
+    {
+      "id": "2025-06",
+      "question": "Does the Income-tax Act, 2025 provide for Dispute Resolution Committees?",
+      "type": "topical",
+      "retrieval_hit": true,
+      "citation_accurate": true,
+      "refused": false,
+      "pass": true
+    },
+    {
+      "id": "2025-07",
+      "question": "What does section 139 of the Income-tax Act, 2025 say?",
+      "type": "exact_section",
+      "retrieval_hit": true,
+      "citation_accurate": true,
+      "refused": false,
+      "pass": true
+    },
+    {
+      "id": "2025-08",
+      "question": "What does section 194 of the Income-tax Act, 2025 say?",
+      "type": "exact_section",
+      "retrieval_hit": true,
+      "citation_accurate": true,
+      "refused": false,
+      "pass": true
+    },
+    {
+      "id": "compare-01",
+      "question": "How does section 139 differ between the old 1961 Act and the new 2025 Act?",
+      "type": "comparison",
+      "refused": false,
+      "answer_preview": "Section 139 of the Income-tax Act, 2025, and the Income-tax Act, 1961, differ in their content and purpose. The 1961 Act does not have a section 139, as the retrieved section is from the 2025 Act.\n\nHo",
+      "covers_both_acts": true,
+      "pass": true
+    },
+    {
+      "id": "refuse-01",
+      "question": "What is the recipe for chocolate chip cookies?",
+      "type": "refusal",
+      "refused": true,
+      "pass": true
+    },
+    {
+      "id": "refuse-02",
+      "question": "What is the GST rate on restaurant services?",
+      "type": "refusal",
+      "refused": false,
+      "pass": false
+    }
+  ],
+  "retrieval_hit_rate": 1.0,
+  "citation_accuracy": 0.9444444444444444,
+  "refusal_accuracy": 0.5
+}

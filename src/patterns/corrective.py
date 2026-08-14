@@ -42,6 +42,16 @@ def answer(question, session_id=None, embedding=None):
         seen = {c["id"] for c in relevant}
         relevant += [c for c in retry_relevant if c["id"] not in seen]
 
+    # NOTE: tried requiring len(relevant) >= _MIN_RELEVANT here (to close
+    # what looked like a gap where two independently-insufficient retry
+    # rounds could still sum past the bar) - reverted after live-testing
+    # broke the common, correct case: most legitimate golden questions
+    # have exactly ONE relevant section, and requiring 2 unconditionally
+    # turned that into a false refusal on 2025-01, 2025-03, 2025-06,
+    # 2025-08, and compare-01. _MIN_RELEVANT genuinely only governs
+    # whether a retry is attempted, not how many chunks a final answer
+    # needs - "not relevant" (truly zero found across both attempts) is
+    # the correct refusal condition.
     if not relevant:
         return {"answer": REFUSAL_MESSAGE, "chunks": chunks, "refused": True, "trace": trace}
 
