@@ -1,0 +1,43 @@
+name: Golden-set eval gate
+
+# Runs on every push to main, unscoped by design - a deliberate,
+# explicitly-confirmed choice (see the production-readiness plan) to
+# catch a regression as soon as it lands rather than only on the paths
+# that look retrieval-related, since this session's own real bugs
+# (grading.py, retrieve.py, the eval harness itself) came from files a
+# path filter could plausibly have excluded.
+#
+# Deliberately a SMOKE subset (4 golden questions across topical, exact-
+# section, comparison, and refusal types), not the full 20-question x
+# 10-pattern sweep - Groq's free tier caps at 500,000 tokens/day, a
+# ceiling this project has hit repeatedly from local dev work alone;
+# running the full sweep on every push would compete with that same
+# shared daily budget and could exhaust it from CI runs alone. The smoke
+# set covers each question type so a genuine regression in any of the
+# three scored metrics (retrieval hit, citation accuracy, refusal
+# accuracy) still has a real chance of being caught.
+on:
+  push:
+    branches: [main]
+
+jobs:
+  smoke-eval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - run: pip install -r requirements.txt
+
+      - name: Run smoke eval (Simple RAG, 4 representative questions)
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          VOYAGE_API_KEY: ${{ secrets.VOYAGE_API_KEY }}
+        run: |
+          python eval/run_eval.py \
+            --pattern simple \
+            --ids 1961-01,2025-07,compare-01,refuse-01 \
+            --fail-on-regression

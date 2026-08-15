@@ -84,8 +84,11 @@ def check_citation_accuracy(item, result):
     return bool(pattern.search(result["answer"]))
 
 
-def run(pattern_name):
+def run(pattern_name, ids=None):
     golden = load_golden()
+    if ids:
+        wanted = set(ids)
+        golden = [item for item in golden if item["id"] in wanted]
     results = []
 
     for item in golden:
@@ -124,14 +127,20 @@ def run(pattern_name):
     passed = sum(1 for r in scoreable if r["pass"])
     print(f"\n{pattern_name}: {passed}/{len(scoreable)} passed ({passed / len(scoreable) * 100:.0f}%)")
 
+    # None (not 0.0) when a filtered --ids subset happens to contain no
+    # questions of that type - a smoke run of just refusal questions
+    # shouldn't print a misleading "0.00" for retrieval/citation it never
+    # measured.
     topical_exact = [r for r in results if r["type"] in ("topical", "exact_section")]
-    hit_rate = sum(1 for r in topical_exact if r.get("retrieval_hit")) / len(topical_exact)
-    citation_rate = sum(1 for r in topical_exact if r.get("citation_accurate")) / len(topical_exact)
+    hit_rate = sum(1 for r in topical_exact if r.get("retrieval_hit")) / len(topical_exact) if topical_exact else None
+    citation_rate = sum(1 for r in topical_exact if r.get("citation_accurate")) / len(topical_exact) if topical_exact else None
     refusal_rows = [r for r in results if r["type"] == "refusal"]
     refusal_rate = sum(1 for r in refusal_rows if r["pass"]) / len(refusal_rows) if refusal_rows else None
 
-    print(f"retrieval_hit_rate: {hit_rate:.2f}")
-    print(f"citation_accuracy: {citation_rate:.2f}")
+    if hit_rate is not None:
+        print(f"retrieval_hit_rate: {hit_rate:.2f}")
+    if citation_rate is not None:
+        print(f"citation_accuracy: {citation_rate:.2f}")
     if refusal_rate is not None:
         print(f"refusal_accuracy: {refusal_rate:.2f}")
 
@@ -141,6 +150,7 @@ def run(pattern_name):
         "retrieval_hit_rate": hit_rate,
         "citation_accuracy": citation_rate,
         "refusal_accuracy": refusal_rate,
+        "all_passed": passed == len(scoreable),
     }
 
 
@@ -151,21 +161,43 @@ def main():
         default="simple",
         help="pattern name to evaluate, or 'all' to run every standard-contract pattern",
     )
+    parser.add_argument(
+        "--ids",
+        default=None,
+        help="comma-separated golden-question ids to run instead of the full set, "
+        "e.g. --ids 1961-01,2025-07,compare-01,refuse-01 (used for the CI smoke gate - "
+        "see .github/workflows/eval.yml)",
+    )
+    parser.add_argument(
+        "--fail-on-regression",
+        action="store_true",
+        help="exit 1 if any scoreable question fails, instead of always exiting 0 - "
+        "the CI gate needs this to actually block a bad push; local exploratory runs "
+        "don't, since a known documented limitation failing isn't a build failure",
+    )
     args = parser.parse_args()
+    ids = args.ids.split(",") if args.ids else None
 
     if args.pattern == "all":
         all_results = {}
+        all_passed = True
         for name in STANDARD_PATTERNS:
             print(f"\n{'=' * 60}\n{name}\n{'=' * 60}")
-            all_results[name] = run(name)
+            all_results[name] = run(name, ids=ids)
+            all_passed = all_passed and all_results[name]["all_passed"]
         out_path = ROOT / "eval" / "results_by_pattern.json"
         out_path.write_text(json.dumps(all_results, indent=2), encoding="utf-8")
         print(f"\nWrote {out_path}")
     else:
-        result = run(args.pattern)
+        result = run(args.pattern, ids=ids)
+        all_passed = result["all_passed"]
         out_path = ROOT / "eval" / ("results.json" if args.pattern == "simple" else f"results_{args.pattern}.json")
         out_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
         print(f"\nWrote {out_path}")
+
+    if args.fail_on_regression and not all_passed:
+        print("\nFAIL-ON-REGRESSION: at least one question failed.")
+        sys.exit(1)
 
 
 if __name__ == "__main__":
