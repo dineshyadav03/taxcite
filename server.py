@@ -23,6 +23,7 @@ from pydantic import BaseModel
 sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))
 
 import cache  # noqa: E402
+import feedback  # noqa: E402
 import generate  # noqa: E402
 import memory  # noqa: E402
 import observability  # noqa: E402
@@ -83,6 +84,15 @@ class ClearRequest(BaseModel):
     session_id: str
 
 
+class FeedbackRequest(BaseModel):
+    message_id: str
+    session_id: str
+    pattern: str
+    question: str
+    answer: str
+    rating: str
+
+
 @app.get("/")
 def index():
     return FileResponse(STATIC_DIR / "index.html")
@@ -119,6 +129,11 @@ def ask(req: AskRequest):
         if cached is not None:
             cached["elapsed_seconds"] = round(time.perf_counter() - t0, 1)
             cached["session_id"] = session_id
+            # A fresh id per response, not reused across repeat views of
+            # the same cached answer - feedback on this specific render
+            # shouldn't get silently merged with feedback on an earlier
+            # one just because the underlying text happens to match.
+            cached["message_id"] = str(uuid.uuid4())
             observability.log_request(
                 {
                     "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -185,6 +200,7 @@ def ask(req: AskRequest):
         "sources": sources,
         "elapsed_seconds": round(time.perf_counter() - t0, 1),
         "session_id": session_id,
+        "message_id": str(uuid.uuid4()),
     }
 
     if cacheable:
@@ -212,4 +228,22 @@ def ask(req: AskRequest):
 @app.post("/api/clear_memory")
 def clear_memory(req: ClearRequest):
     memory.clear(req.session_id)
+    return {"ok": True}
+
+
+@app.post("/api/feedback")
+def submit_feedback(req: FeedbackRequest):
+    if req.rating not in ("up", "down"):
+        return {"error": "rating must be 'up' or 'down'"}
+    feedback.log_feedback(
+        {
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "message_id": req.message_id,
+            "session_id": req.session_id,
+            "pattern": req.pattern,
+            "question": req.question,
+            "answer": req.answer,
+            "rating": req.rating,
+        }
+    )
     return {"ok": True}

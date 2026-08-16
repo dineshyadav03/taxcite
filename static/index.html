@@ -34,6 +34,14 @@
   .msg .meta .badge { display: inline-block; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 1px 7px; margin: 2px 4px 2px 0; font-family: var(--mono); font-size: 11px; }
   .badge.table { border-style: dashed; }
   .badge.ref { border-style: dotted; font-weight: 600; }
+  .feedback { margin-top: 8px; display: flex; gap: 6px; }
+  .feedback button {
+    background: var(--panel2); color: var(--text); border: 1px solid var(--border);
+    border-radius: 12px; padding: 3px 10px; font-size: 11.5px; cursor: pointer;
+  }
+  .feedback button:hover:not(:disabled) { background: #000000; color: #ffffff; }
+  .feedback button.voted { background: #000000; color: #ffffff; }
+  .feedback button:disabled:not(.voted) { opacity: .35; cursor: default; }
   .msg.pending { color: var(--dim); font-style: italic; }
   #composer { display: flex; gap: 10px; padding: 14px 22px; border-top: 2px solid var(--border); background: var(--panel); }
   #composer input {
@@ -155,6 +163,39 @@ function add(cls, text) {
   return div;
 }
 
+function addFeedback(msgDiv, d, question) {
+  const box = document.createElement("div");
+  box.className = "feedback";
+  const up = document.createElement("button");
+  up.textContent = "Helpful";
+  const down = document.createElement("button");
+  down.textContent = "Not helpful";
+  box.appendChild(up);
+  box.appendChild(down);
+  msgDiv.appendChild(box);
+
+  async function vote(rating, btn, otherBtn) {
+    up.disabled = down.disabled = true;
+    btn.classList.add("voted");
+    try {
+      await fetch("/api/feedback", {
+        method: "POST", headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          message_id: d.message_id, session_id: sessionId, pattern: d.pattern,
+          question: question, answer: d.answer, rating: rating,
+        }),
+      });
+    } catch (e) {
+      // Feedback is best-effort - a failed vote shouldn't surface as an
+      // error over the actual answer, which already rendered fine.
+      btn.classList.remove("voted");
+      up.disabled = down.disabled = false;
+    }
+  }
+  up.addEventListener("click", () => vote("up", up, down));
+  down.addEventListener("click", () => vote("down", down, up));
+}
+
 async function ask() {
   const q = input.value.trim();
   if (!q || sendBtn.disabled) return;
@@ -184,6 +225,7 @@ async function ask() {
     }
     meta.innerHTML = html;
     div.appendChild(meta);
+    if (d.pattern !== "chitchat" && d.message_id) addFeedback(div, d, q);
     traceEl.innerHTML = "";
     const pre = document.createElement("pre");
     pre.textContent = JSON.stringify(d.trace, null, 2);
