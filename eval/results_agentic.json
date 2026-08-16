@@ -189,5 +189,6 @@
   ],
   "retrieval_hit_rate": 0.9444444444444444,
   "citation_accuracy": 0.9444444444444444,
-  "refusal_accuracy": 1.0
+  "refusal_accuracy": 1.0,
+  "all_passed": false
 }

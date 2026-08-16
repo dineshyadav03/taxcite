@@ -13,11 +13,30 @@ the pattern most likely to wander - the trace (full action log) exists
 precisely so a reviewer can see *how* it navigated, including when a
 smaller model takes a redundant step. The forced-finish fallback caps
 cost: after 5 steps it must answer from whatever it has gathered.
+
+Orchestration is LangGraph (a StateGraph over agent/tools nodes with
+conditional routing) rather than the hand-rolled while-loop this pattern
+started with - the standard way this control-flow shape gets built in
+practice, and worth demonstrating directly rather than only ever hand-
+rolling it. Deliberately NOT also switching the model-calling layer to
+LangChain's own primitives (ChatGroq, bind_tools): generate.llm() already
+carries real, working retry-with-backoff for Groq's rate limits, JSON-
+mode salvage-parsing, and (as of this session) per-request token
+accounting that src/observability.py's cost tracking depends on -
+swapping the actual LLM call to a separate LangChain wrapper would
+silently stop tokens from being counted, since that accounting hangs off
+generate.llm() specifically. LangGraph owns the control flow; every
+model call still goes through the same primitive every other pattern
+uses.
 """
 import json
+import operator
+from typing import Annotated, TypedDict
+
+from langgraph.graph import END, StateGraph
 
 import graph
-from generate import DISTANCE_REFUSAL_THRESHOLD, REFUSAL_MESSAGE, llm
+from generate import DISTANCE_REFUSAL_THRESHOLD, REFUSAL_MESSAGE, build_user_prompt, llm
 from retrieve import exact_section_lookup, fetch_section, search, vector_search
 
 _MAX_STEPS = 5
@@ -102,52 +121,125 @@ def _confidently_grounded(question):
     return bool(raw_hits) and raw_hits[0]["distance"] <= DISTANCE_REFUSAL_THRESHOLD
 
 
+class _AgentState(TypedDict):
+    question: str
+    transcript: str
+    gathered: list
+    # Annotated + operator.add makes LangGraph append each node's
+    # returned list to the running one automatically, instead of
+    # overwriting it - the natural fit for a trace that should show
+    # every step across repeated agent/tools cycles, not just the last.
+    steps: Annotated[list, operator.add]
+    step_count: int
+    action: dict
+    outcome: dict  # set by finish_node/forced_finish_node; answer() reads this
+
+
+def _agent_node(state):
+    try:
+        action = llm(state["transcript"], system_prompt=_AGENT_SYSTEM, json_mode=True, max_tokens=500)
+    except ValueError as e:
+        return {"action": {"tool": "__error__"}, "steps": [{"error": str(e)[:200]}]}
+    return {"action": action, "step_count": state["step_count"] + 1}
+
+
+def _tools_node(state):
+    action = state["action"]
+    gathered = state["gathered"]
+    observation = _run_tool(action, gathered)
+    transcript = state["transcript"] + (
+        f"\n\nAction taken: {json.dumps(action)}\nObservation: {json.dumps(observation)[:2000]}"
+        f"\n\nNext action (step {state['step_count'] + 1}/{_MAX_STEPS}, finish when ready):"
+    )
+    return {
+        "gathered": gathered,
+        "transcript": transcript,
+        "steps": [{"action": action, "observation_preview": json.dumps(observation)[:300]}],
+    }
+
+
+def _finish_node(state):
+    action = state["action"]
+    answer_text = str(action.get("answer", "")).strip()
+    if not answer_text:
+        return _forced_finish_node(state)
+    return {"steps": [{"action": "finish"}], "outcome": {"answer_text": answer_text, "forced": False}}
+
+
+def _forced_finish_node(state):
+    # Step budget exhausted, a malformed action, or an empty finish
+    # answer - force a decision from whatever was gathered rather than
+    # burning more calls. The actual grounded/refused decision happens
+    # once in answer() after the graph returns (see _confidently_grounded's
+    # docstring for why it's independent of anything the loop gathered);
+    # this node only decides whether there's enough material to even
+    # attempt a forced answer.
+    return {"steps": [{"forced_finish": True}], "outcome": {"answer_text": None, "forced": True}}
+
+
+def _route_after_agent(state):
+    tool = state["action"].get("tool")
+    if tool == "finish":
+        return "finish"
+    if tool == "__error__" or state["step_count"] > _MAX_STEPS:
+        return "forced_finish"
+    return "tools"
+
+
+def _route_after_tools(state):
+    return "forced_finish" if state["step_count"] >= _MAX_STEPS else "agent"
+
+
+def _build_graph():
+    g = StateGraph(_AgentState)
+    g.add_node("agent", _agent_node)
+    g.add_node("tools", _tools_node)
+    g.add_node("finish", _finish_node)
+    g.add_node("forced_finish", _forced_finish_node)
+    g.set_entry_point("agent")
+    g.add_conditional_edges("agent", _route_after_agent, {"finish": "finish", "tools": "tools", "forced_finish": "forced_finish"})
+    g.add_conditional_edges("tools", _route_after_tools, {"agent": "agent", "forced_finish": "forced_finish"})
+    g.add_edge("finish", END)
+    g.add_edge("forced_finish", END)
+    return g.compile()
+
+
+_GRAPH = _build_graph()
+
+
 def answer(question, session_id=None):
-    trace = {"steps": []}
-    gathered = []
-    transcript = f"Question: {question}"
     grounded = _confidently_grounded(question)
-    trace["confidently_grounded"] = grounded
 
-    for step in range(_MAX_STEPS):
-        try:
-            action = llm(transcript, system_prompt=_AGENT_SYSTEM, json_mode=True, max_tokens=500)
-        except ValueError as e:
-            trace["steps"].append({"error": str(e)[:200]})
-            break
+    final_state = _GRAPH.invoke(
+        {
+            "question": question,
+            "transcript": f"Question: {question}",
+            "gathered": [],
+            "steps": [],
+            "step_count": 0,
+            "action": {},
+            "outcome": {},
+        },
+        config={"recursion_limit": _MAX_STEPS * 2 + 4},
+    )
 
-        if action.get("tool") == "finish":
-            trace["steps"].append({"action": "finish"})
-            answer_text = str(action.get("answer", "")).strip()
-            if not answer_text:
-                break
-            # The system prompt asks the model to self-report when the
-            # corpus doesn't answer the question, but nothing enforced
-            # that - verified live: a chocolate-chip-cookie question got
-            # an honest "I don't have any information..." answer, yet
-            # `refused` was unconditionally False regardless of what the
-            # text actually said, the same gap HyDE had before its own
-            # fix. Checked here against the actual retrieval evidence
-            # instead of trusting the model's own free-text framing.
-            if not grounded:
-                return {"answer": REFUSAL_MESSAGE, "chunks": gathered[:8], "refused": True, "trace": trace}
-            return {"answer": answer_text, "chunks": gathered[:8], "refused": False, "trace": trace}
+    trace = {"steps": final_state["steps"], "confidently_grounded": grounded}
+    gathered = final_state["gathered"]
+    outcome = final_state["outcome"]
 
-        observation = _run_tool(action, gathered)
-        trace["steps"].append({"action": action, "observation_preview": json.dumps(observation)[:300]})
-        transcript += (
-            f"\n\nAction taken: {json.dumps(action)}\nObservation: {json.dumps(observation)[:2000]}"
-            f"\n\nNext action (step {step + 2}/{_MAX_STEPS}, finish when ready):"
-        )
+    # The system prompt asks the model to self-report when the corpus
+    # doesn't answer the question, but nothing enforced that - verified
+    # live: a chocolate-chip-cookie question got an honest "I don't have
+    # any information..." answer, yet `refused` was unconditionally False
+    # regardless of what the text actually said, the same gap HyDE had
+    # before its own fix. Checked here against the actual retrieval
+    # evidence instead of trusting the model's own free-text framing.
+    if not outcome["forced"]:
+        if not grounded:
+            return {"answer": REFUSAL_MESSAGE, "chunks": gathered[:8], "refused": True, "trace": trace}
+        return {"answer": outcome["answer_text"], "chunks": gathered[:8], "refused": False, "trace": trace}
 
-    # step budget exhausted or malformed action - force an answer from
-    # whatever was gathered rather than burning more calls. Same
-    # confidence check as the normal finish path, checked first so a
-    # genuinely empty-handed search doesn't spend one more LLM call
-    # writing an answer that would just get discarded as a refusal.
     if gathered and grounded:
-        from generate import build_user_prompt
-
         trace["forced_finish"] = True
         answer_text = llm(build_user_prompt(question, gathered[:6]))
         return {"answer": answer_text, "chunks": gathered[:6], "refused": False, "trace": trace}
