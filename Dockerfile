@@ -17,7 +17,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 # every deploy for no reason - the vectors don't change between deploys.
 COPY . .
 
-# Hugging Face Spaces' Docker SDK expects the app to listen on 7860.
+# 7860 is only the default, not a hardcoded requirement - Hugging Face
+# Spaces' Docker SDK specifically expects 7860, but Render (and most
+# other platforms) inject their own port via a $PORT env var at
+# container start and route traffic there instead, whatever it is.
+# Reading $PORT with a 7860 fallback means the same image runs correctly
+# on either kind of platform, and on a plain local `docker run` with no
+# $PORT set at all - one image, not a per-platform variant.
 EXPOSE 7860
 
-CMD ["uvicorn", "server:app", "--host", "0.0.0.0", "--port", "7860"]
+CMD ["sh", "-c", "uvicorn server:app --host 0.0.0.0 --port ${PORT:-7860}"]

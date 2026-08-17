@@ -1,10 +1,3 @@
----
-title: TaxCite
-sdk: docker
-app_port: 7860
-pinned: false
----
-
 # TaxCite
 
 A citation-grounded retrieval-augmented generation (RAG) system over Indian income tax law. Every answer traces back to an exact Act, chapter, and section of the Income-tax Act, 2025 or the superseded Income-tax Act, 1961 — and the system implements all ten commonly-cited RAG architectural patterns, plus three original patterns built on the same substrate, as selectable, independently verifiable pipelines over the same corpus, rather than picking one and stopping.
@@ -283,7 +276,7 @@ python src/graph.py                   # build the cross-reference graph
 python -m uvicorn server:app --port 8600
 ```
 
-**Or via Docker** (what the Hugging Face Spaces deployment runs): `chroma_db/` ships pre-built and committed rather than rebuilt at image-build time, since a full build takes ~90 minutes under Voyage's free-tier throttle - no point re-running it on every deploy when the vectors don't change.
+**Or via Docker** (the same image a public deployment would run): `chroma_db/` ships pre-built and committed rather than rebuilt at image-build time, since a full build takes ~90 minutes under Voyage's free-tier throttle - no point re-running it on every deploy when the vectors don't change.
 
 ```bash
 docker build -t taxcite .
@@ -310,7 +303,7 @@ Not "a RAG system that answers tax questions" as the end in itself — that is t
 
 1. Table-aware extraction inside the prose pipeline itself, rather than only in a separate table index that a non-multi-modal pattern never consults.
 2. A better source for the Income-tax Rules, 1962, so procedural and forms-level questions become answerable — the one source found so far (a chronological amendment-notification bundle, not consolidated rule text) isn't usable; genuinely open, not for lack of trying.
-3. Public deployment — in progress; see [Interface](#interface) and [Running it](#running-it) for the Docker/Hugging Face Spaces path once it lands.
+3. Public deployment — Docker itself is fully verified locally (see [Running it](#running-it)); the hosting platform is not yet settled. The original plan (Hugging Face Spaces) fell through after this was written - Spaces removed Docker-SDK access from its free tier, now requiring a paid PRO subscription, which doesn't fit this project's zero-budget constraint. Evaluating free alternatives instead.
 4. A learned or more rigorously validated router for the Adaptive pattern, rather than a single small-model classification call.
 
 See [WRITEUP.md](WRITEUP.md) for the portfolio narrative version of this project, including the specific base-model test that motivated it and the infrastructure friction (rate limits, a Windows file-lock, a mid-session pivot from an entirely different project) that shaped how it was actually built.
