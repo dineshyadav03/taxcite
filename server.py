@@ -27,6 +27,7 @@ import feedback  # noqa: E402
 import generate  # noqa: E402
 import memory  # noqa: E402
 import observability  # noqa: E402
+import ratelimit  # noqa: E402
 from guardrails import scan_chunks  # noqa: E402
 from patterns import PATTERN_INFO, PATTERNS, run  # noqa: E402
 
@@ -149,6 +150,20 @@ def ask(req: AskRequest):
                 }
             )
             return cached
+
+    # Checked here, not earlier - chitchat and cache hits stay free for
+    # everyone regardless of how much of their window they've used, since
+    # this limit exists to protect the shared, expensive Groq/Voyage
+    # throttle (the same resource the semaphore below protects), not to
+    # punish someone for asking a lot of questions that all happen to be
+    # cheap.
+    if not ratelimit.check(session_id):
+        return {
+            "error": (
+                "You've hit this session's rate limit (20 requests per 5 minutes) - "
+                "this protects the shared free-tier throttle every visitor draws from. Please wait a bit."
+            )
+        }
 
     acquired = _request_semaphore.acquire(timeout=_SEMAPHORE_WAIT_SECONDS)
     if not acquired:
