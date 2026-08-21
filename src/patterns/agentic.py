@@ -137,7 +137,11 @@ class _AgentState(TypedDict):
 
 def _agent_node(state):
     try:
-        action = llm(state["transcript"], system_prompt=_AGENT_SYSTEM, json_mode=True, max_tokens=500)
+        # Raised from 500 after the Groq model swap (see generate.py's
+        # GROQ_MODEL comment) - the new model reasons internally before
+        # writing the JSON action, and that reasoning counts against this
+        # same budget, called once per tool-loop step (up to 5 times).
+        action = llm(state["transcript"], system_prompt=_AGENT_SYSTEM, json_mode=True, max_tokens=1200)
     except ValueError as e:
         return {"action": {"tool": "__error__"}, "steps": [{"error": str(e)[:200]}]}
     return {"action": action, "step_count": state["step_count"] + 1}

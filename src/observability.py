@@ -14,13 +14,17 @@ from pathlib import Path
 LOG_PATH = Path(__file__).resolve().parent.parent / "data" / "observability.jsonl"
 _lock = threading.Lock()
 
-# Groq's list pricing for llama-3.1-8b-instant (the model this project
-# uses), confirmed via web search, not guessed. This project runs on
-# Groq's free tier, so real spend is $0 - the estimate shows what a
-# paid-tier deployment would cost at the same usage pattern, which is the
-# honest way to report "cost" for a project with no actual billing.
-PRICE_PER_M_INPUT = 0.05
-PRICE_PER_M_OUTPUT = 0.08
+# Groq's list pricing for openai/gpt-oss-20b (the model this project
+# uses as of the emergency swap in generate.py - llama-3.1-8b-instant
+# was removed from Groq's platform entirely). Confirmed via web search
+# against multiple independently-agreeing sources including Groq's own
+# docs domain, not guessed - stale pricing here would silently corrupt
+# every cost estimate this project reports. This project runs on Groq's
+# free tier, so real spend is $0 - the estimate shows what a paid-tier
+# deployment would cost at the same usage pattern, which is the honest
+# way to report "cost" for a project with no actual billing.
+PRICE_PER_M_INPUT = 0.075
+PRICE_PER_M_OUTPUT = 0.30
 
 
 def estimate_cost(prompt_tokens, completion_tokens):

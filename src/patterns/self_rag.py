@@ -41,7 +41,10 @@ def answer(question, session_id=None):
             f"Excerpts:\n{context}\n\nDrafted answer:\n{draft}",
             system_prompt=_CRITIQUE_SYSTEM,
             json_mode=True,
-            max_tokens=600,
+            # Raised from 600 after the Groq model swap (see generate.py's
+            # GROQ_MODEL comment) - reasoning tokens count against this
+            # same budget now.
+            max_tokens=1500,
         )
         trace["critique"] = critique
     except Exception as e:

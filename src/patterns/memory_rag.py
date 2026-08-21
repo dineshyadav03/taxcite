@@ -33,7 +33,10 @@ def answer(question, session_id=None):
                 f"Conversation history:\n{history}\n\nFollow-up question: {question}",
                 system_prompt=_REWRITE_SYSTEM,
                 json_mode=True,
-                max_tokens=150,
+                # Raised from 150 after the Groq model swap (see
+                # generate.py's GROQ_MODEL comment) - reasoning tokens
+                # count against this same budget now.
+                max_tokens=500,
             )["standalone_question"]
             if rewritten and rewritten.strip() and rewritten.strip() != question.strip():
                 retrieval_question = rewritten.strip()

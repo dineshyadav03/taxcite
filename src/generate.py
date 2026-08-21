@@ -50,8 +50,27 @@ def get_usage_totals():
         "call_count": len(calls),
     }
 
+# llama-3.1-8b-instant (the original default) was removed from Groq's
+# available models entirely, verified live: every call started 404ing
+# with "model does not exist or you do not have access to it," and
+# `client.models.list()` no longer lists it at all - confirmed a genuine
+# platform-side removal, not an account or quota issue. Replaced with
+# the closest equivalent still available (checked the live model list
+# rather than guessing): a modern, similarly-sized open-weight model,
+# not Groq's own agentic "compound" models, which have different
+# behavior not evaluated for this project's structured JSON-mode calls.
+# This is an emergency same-tier swap to restore function, not a
+# considered upgrade - every eval number in this project's history was
+# measured against the old model and needs re-verification against this
+# one before being trusted as still accurate.
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
-GROQ_MODEL = os.environ.get("GROQ_MODEL", "llama-3.1-8b-instant")
+GROQ_MODEL = os.environ.get("GROQ_MODEL", "openai/gpt-oss-20b")
+# Separate from OLLAMA_NUM_PREDICT (used to share one fallback constant
+# for both backends) - the local Ollama model is a plain, non-reasoning
+# model unaffected by the Groq model swap above, so its own budget
+# shouldn't get inflated along with Groq's just because they used to be
+# the same number by coincidence.
+GROQ_NUM_PREDICT = int(os.environ.get("GROQ_NUM_PREDICT", "1200"))
 OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "llama3.2:3b")
 OLLAMA_NUM_CTX = int(os.environ.get("OLLAMA_NUM_CTX", "6144"))
 OLLAMA_NUM_PREDICT = int(os.environ.get("OLLAMA_NUM_PREDICT", "500"))
@@ -99,7 +118,8 @@ def llm(user_prompt, system_prompt=SYSTEM_PROMPT, json_mode=False, max_tokens=No
     the everyday 8B model reliably gets right - verified live: the 8B
     model kept mislabeling "one exemption among fifty" as a "strong"
     match to the whole exemptions section)."""
-    max_tokens = max_tokens or OLLAMA_NUM_PREDICT
+    if max_tokens is None:
+        max_tokens = GROQ_NUM_PREDICT if GROQ_API_KEY else OLLAMA_NUM_PREDICT
     if GROQ_API_KEY:
         from groq import APIConnectionError, BadRequestError, RateLimitError
 

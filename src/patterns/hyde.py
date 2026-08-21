@@ -57,7 +57,15 @@ def answer(question, session_id=None):
         if not raw_chunks or raw_chunks[0]["distance"] > DISTANCE_REFUSAL_THRESHOLD:
             return {"answer": REFUSAL_MESSAGE, "chunks": raw_chunks, "refused": True, "trace": trace}
 
-        hypothetical = llm(question, system_prompt=_HYDE_SYSTEM, max_tokens=200)
+        # Raised from 200 after the Groq model swap (see generate.py's
+        # GROQ_MODEL comment) - reasoning tokens count against this same
+        # budget now, on top of the actual 60-100 word passage. 600 was
+        # tried first and still measured too tight live (a real call
+        # needed 611 tokens total and got cut off with empty output,
+        # which then crashed the embedding call downstream on an empty
+        # string) - 1000 leaves real headroom instead of sitting right at
+        # the edge of a single measured sample.
+        hypothetical = llm(question, system_prompt=_HYDE_SYSTEM, max_tokens=1000)
         trace["hypothetical"] = hypothetical
         hyde_embedding = embed_texts([hypothetical], input_type="document")[0]
         chunks = _query_collection(get_collection(), hyde_embedding, 5)

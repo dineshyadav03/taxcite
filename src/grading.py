@@ -54,7 +54,14 @@ def grade_chunks(question, chunks):
         f"Question: {question}\n\nExcerpts:\n{listing}",
         system_prompt=_GRADE_SYSTEM,
         json_mode=True,
-        max_tokens=400,
+        # Raised from 400 after the Groq model swap (llama-3.1-8b-instant
+        # removed platform-side, replaced with openai/gpt-oss-20b) - the
+        # new model spends part of its token budget on internal reasoning
+        # before writing visible output, verified live: a trivial 5-token
+        # budget returned nothing at all, not an error, just empty. 400
+        # was sized for the old model's direct-answer behavior and left
+        # no headroom for that, especially grading up to 7 chunks at once.
+        max_tokens=1200,
     )
     grades = {g["index"]: g for g in verdict.get("grades", []) if isinstance(g, dict) and "index" in g}
     relevant = [c for i, c in enumerate(chunks) if grades.get(i, {}).get("relevant")]

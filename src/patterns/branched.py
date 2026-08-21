@@ -35,7 +35,10 @@ def answer(question, session_id=None):
             f"Question: {question}",
             system_prompt=_DECOMPOSE_SYSTEM,
             json_mode=True,
-            max_tokens=200,
+            # Raised from 200 after the Groq model swap (see generate.py's
+            # GROQ_MODEL comment) - reasoning tokens count against this
+            # same budget now.
+            max_tokens=600,
         )["sub_questions"][:_MAX_BRANCHES]
     except (ValueError, KeyError):
         subs = [question]

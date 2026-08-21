@@ -51,7 +51,11 @@ def answer(question, session_id=None):
         route, reason = "simple", "query names an explicit section number (deterministic fast path)"
     else:
         try:
-            verdict = llm(f"Question: {question}", system_prompt=_ROUTE_SYSTEM, json_mode=True, max_tokens=120)
+            # Raised from 120 after the Groq model swap (see generate.py's
+            # GROQ_MODEL comment) - the new model reasons internally
+            # before writing the JSON verdict, and that reasoning counts
+            # against this same budget.
+            verdict = llm(f"Question: {question}", system_prompt=_ROUTE_SYSTEM, json_mode=True, max_tokens=400)
             category = str(verdict.get("category", "topical")).lower().strip()
             reason = verdict.get("reason", "")
         except ValueError:
