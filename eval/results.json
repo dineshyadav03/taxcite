@@ -6,9 +6,9 @@
       "question": "Who is required to file an income tax return under the Income-tax Act, 1961?",
       "type": "topical",
       "retrieval_hit": true,
-      "citation_accurate": true,
+      "citation_accurate": false,
       "refused": false,
-      "pass": true
+      "pass": false
     },
     {
       "id": "1961-02",
@@ -87,9 +87,9 @@
       "question": "What does section 292 of the Income-tax Act, 1961 say about cognizance of offences?",
       "type": "exact_section",
       "retrieval_hit": true,
-      "citation_accurate": true,
-      "refused": false,
-      "pass": true
+      "citation_accurate": null,
+      "refused": true,
+      "pass": false
     },
     {
       "id": "2025-01",
@@ -168,7 +168,7 @@
       "question": "How does section 139 differ between the old 1961 Act and the new 2025 Act?",
       "type": "comparison",
       "refused": false,
-      "answer_preview": "Based on the retrieved sections, it appears that section 139 in the Income-tax Act, 1961, and section 139 in the Income-tax Act, 2025, are different provisions.\n\nThe Income-tax Act, 1961, does not hav",
+      "answer_preview": "I\u2019m sorry, but the retrieved sections only contain the text of Section\u202f139 from the Income\u2011tax Act,\u202f2025.  No section\u202f139 from the Income\u2011tax Act,\u202f1961 was provided, so I cannot compare the two provis",
       "covers_both_acts": true,
       "pass": true
     },
@@ -188,6 +188,7 @@
     }
   ],
   "retrieval_hit_rate": 1.0,
-  "citation_accuracy": 0.9444444444444444,
-  "refusal_accuracy": 1.0
+  "citation_accuracy": 0.8333333333333334,
+  "refusal_accuracy": 1.0,
+  "all_passed": false
 }
