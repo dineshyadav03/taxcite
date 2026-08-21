@@ -43,6 +43,7 @@
   .feedback button.voted { background: #000000; color: #ffffff; }
   .feedback button:disabled:not(.voted) { opacity: .35; cursor: default; }
   .msg.pending { color: var(--dim); font-style: italic; }
+  #disclaimer { padding: 7px 22px; border-top: 1px solid var(--border); background: var(--panel2); font-size: 11.5px; color: var(--dim); text-align: center; }
   #composer { display: flex; gap: 10px; padding: 14px 22px; border-top: 2px solid var(--border); background: var(--panel); }
   #composer input {
     flex: 1; background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px;
@@ -85,6 +86,7 @@
     <div id="messages">
       <div class="msg bot">Ask anything about Indian income tax law. Pick a RAG pattern on the right (or leave it on <b>adaptive</b> and let the router decide) — the trace panel shows what the pattern actually did: sub-questions asked, chunks graded, references followed.</div>
     </div>
+    <div id="disclaimer">Not professional tax advice. Verify anything important with a qualified tax professional before relying on it.</div>
     <div id="composer">
       <input id="q" placeholder="e.g. What does section 139 of the 1961 Act say?" autocomplete="off">
       <button id="send">Ask</button>

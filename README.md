@@ -22,7 +22,8 @@ A citation-grounded retrieval-augmented generation (RAG) system over Indian inco
 16. [Running it](#running-it)
 17. [Cost and infrastructure](#cost-and-infrastructure)
 18. [What this project is trying to demonstrate](#what-this-project-is-trying-to-demonstrate)
-19. [Planned work](#planned-work)
+19. [Path to production](#path-to-production)
+20. [Planned work](#planned-work)
 
 ## Why this project exists
 
@@ -299,11 +300,28 @@ Not "a RAG system that answers tax questions" as the end in itself — that is t
 
 **That an honest limitations section is more informative than a longer feature list.** Every section of this document that says "this doesn't work yet" or "this was a real bug, here is exactly what broke" is deliberate. A citation-grounded system whose own documentation will not tell you where the citations can still go wrong has not actually demonstrated the discipline it claims to bring to the underlying problem.
 
+## Path to production
+
+This project is built and verified as a portfolio piece — proving these RAG techniques work correctly on a real, checkable problem, not as a live product handling real users' tax decisions. Those are different bars. Below is an honest accounting of the distance between them, split by who can actually close each gap.
+
+**Done:**
+- **Per-visitor rate limiting.** Previously there was only a global concurrency cap shared by every visitor combined, no per-visitor limit at all — a real gap named during this project's own production-readiness review, not caught by an outside audit. Scoped honestly: it's keyed by a client-supplied session id, which is trivially spoofed by clearing browser storage, so it's a fairness mechanism against one visitor monopolizing the shared free-tier throttle, not a security boundary. Real production use would need IP-based or authenticated limiting layered on top of this, not instead of it.
+- **A visible disclaimer.** "Not professional tax advice — verify anything important with a qualified professional" now shows directly in the UI, not buried in documentation nobody reads before asking a question.
+- **Honest, measured speed expectations per pattern**, not vague "fast/medium/slow" guesses — the sidebar now shows real seconds from an actual timed pass across all 13 patterns, so nobody selects a pattern expecting a 5-second answer and waits 2.5 minutes instead.
+
+**Real engineering work, not yet done:**
+- **An ongoing re-ingestion process.** This project can already *detect* when the source law has changed (a build manifest + freshness checker, verified live against the real government PDF hosts), but nothing yet automatically re-ingests an amendment once one is detected. Detection without action isn't the full loop.
+- **Authenticated access**, if this ever needed to scale past a personal demo — session-id-based limiting (above) is a stopgap, not a real identity boundary.
+- **Paid infrastructure once real traffic justified it.** The free-tier throttle (Voyage's 3 requests/minute, Groq's daily token cap) is the root cause behind this project's slower patterns and the recurring quota walls hit during development — a real product would eventually need to pay for headroom, which conflicts with this project's deliberate zero-budget constraint but is the honest tradeoff being made.
+
+**Needs a person, not code — explicitly not something to research or build around blind:**
+- **Expert validation.** The 20-question golden test set was verified by reading the actual statute text directly, not reviewed by a practicing tax professional or lawyer. That's a real, meaningful gap between "verified correct against the source text" and "verified correct by someone qualified to judge real-world adequacy."
+- **A usable source for the Income-tax Rules, 1962** — the procedural companion to the Act itself, referenced constantly in real practice for filing mechanics and forms. The only source found so far is a scattered chronological amendment-notification bundle, not consolidated rule text; genuinely unusable, not for lack of trying.
+
 ## Planned work
 
 1. Table-aware extraction inside the prose pipeline itself, rather than only in a separate table index that a non-multi-modal pattern never consults.
-2. A better source for the Income-tax Rules, 1962, so procedural and forms-level questions become answerable — the one source found so far (a chronological amendment-notification bundle, not consolidated rule text) isn't usable; genuinely open, not for lack of trying.
-3. Public deployment — Docker itself is fully verified locally (see [Running it](#running-it)); the hosting platform is not yet settled. The original plan (Hugging Face Spaces) fell through after this was written - Spaces removed Docker-SDK access from its free tier, now requiring a paid PRO subscription, which doesn't fit this project's zero-budget constraint. Evaluating free alternatives instead.
-4. A learned or more rigorously validated router for the Adaptive pattern, rather than a single small-model classification call.
+2. Public deployment — Docker itself is fully verified locally (see [Running it](#running-it)); the hosting platform is not yet settled. The original plan (Hugging Face Spaces) fell through after this was written - Spaces removed Docker-SDK access from its free tier, now requiring a paid PRO subscription, which doesn't fit this project's zero-budget constraint. Evaluating free alternatives instead.
+3. A learned or more rigorously validated router for the Adaptive pattern, rather than a single small-model classification call.
 
 See [WRITEUP.md](WRITEUP.md) for the portfolio narrative version of this project, including the specific base-model test that motivated it and the infrastructure friction (rate limits, a Windows file-lock, a mid-session pivot from an entirely different project) that shaped how it was actually built.
