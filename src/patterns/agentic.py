@@ -41,13 +41,72 @@ from retrieve import exact_section_lookup, fetch_section, search, vector_search
 
 _MAX_STEPS = 5
 
-_AGENT_SYSTEM = """You are a legal research agent for Indian income tax law with retrieval tools. Each turn, reply with exactly one JSON action:
-{"tool": "search", "query": "..."} - semantic + exact search over both Acts
-{"tool": "get_section", "act_id": "itact2025" or "itact1961", "section": "..."} - full text of a section
-{"tool": "get_references", "act_id": "...", "section": "..."} - cross-references of a section
-{"tool": "finish", "answer": "..."} - final answer, citing (Act title, Section N) for every claim
+# The tool shape used to be described in the system prompt text and
+# parsed out of json_mode output - switched to Groq's native
+# function-calling after the Groq model swap (see generate.py's llm()
+# docstring for why: openai/gpt-oss-20b has its own tool-calling
+# instinct that json_mode couldn't satisfy without real tools
+# registered). The prompt no longer needs to spell out a JSON shape -
+# the model gets that from these schemas directly - only the natural-
+# language behavioral rules remain.
+_AGENT_SYSTEM = """You are a legal research agent for Indian income tax law with retrieval tools. Ground every claim in text you actually retrieved this conversation; if the corpus doesn't answer the question, finish with an honest statement of that; prefer finishing as soon as you have enough - each tool call has real cost. When you finish, cite (Act title, Section N) for every claim."""
 
-Rules: ground every claim in text you actually retrieved this conversation; if the corpus doesn't answer the question, finish with an honest statement of that; prefer finishing as soon as you have enough - each tool call has real cost."""
+_TOOLS = [
+    {
+        "type": "function",
+        "function": {
+            "name": "search",
+            "description": "Semantic + exact search over both Income-tax Acts. Returns a short list of candidate sections with distance scores.",
+            "parameters": {
+                "type": "object",
+                "properties": {"query": {"type": "string", "description": "search query text"}},
+                "required": ["query"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_section",
+            "description": "Fetch the full text of one exact, known section.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "act_id": {"type": "string", "enum": ["itact2025", "itact1961"], "description": "itact2025 for the 2025 Act, itact1961 for the 1961 Act"},
+                    "section": {"type": "string", "description": "the section number, e.g. '139' or '80C'"},
+                },
+                "required": ["act_id", "section"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_references",
+            "description": "Look up a section's real statutory cross-references - what it cites, and what cites it.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "act_id": {"type": "string", "enum": ["itact2025", "itact1961"]},
+                    "section": {"type": "string"},
+                },
+                "required": ["act_id", "section"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "finish",
+            "description": "Give the final answer, citing (Act title, Section N) for every claim. Call this once you have enough to answer, or to honestly say the corpus doesn't answer the question.",
+            "parameters": {
+                "type": "object",
+                "properties": {"answer": {"type": "string"}},
+                "required": ["answer"],
+            },
+        },
+    },
+]
 
 
 def _run_tool(action, gathered):
@@ -137,11 +196,11 @@ class _AgentState(TypedDict):
 
 def _agent_node(state):
     try:
-        # Raised from 500 after the Groq model swap (see generate.py's
-        # GROQ_MODEL comment) - the new model reasons internally before
-        # writing the JSON action, and that reasoning counts against this
-        # same budget, called once per tool-loop step (up to 5 times).
-        action = llm(state["transcript"], system_prompt=_AGENT_SYSTEM, json_mode=True, max_tokens=1200)
+        # tools= (native Groq function-calling), not json_mode - see
+        # generate.py's llm() docstring for why the model swap forced
+        # this. 1200 tokens: reasoning counts against this same budget,
+        # called once per tool-loop step (up to 5 times).
+        action = llm(state["transcript"], system_prompt=_AGENT_SYSTEM, tools=_TOOLS, max_tokens=1200)
     except ValueError as e:
         return {"action": {"tool": "__error__"}, "steps": [{"error": str(e)[:200]}]}
     return {"action": action, "step_count": state["step_count"] + 1}

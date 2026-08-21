@@ -108,7 +108,7 @@ def _get_groq():
     return _groq_client
 
 
-def llm(user_prompt, system_prompt=SYSTEM_PROMPT, json_mode=False, max_tokens=None, temperature=0, model=None):
+def llm(user_prompt, system_prompt=SYSTEM_PROMPT, json_mode=False, max_tokens=None, temperature=0, model=None, tools=None):
     """Single LLM call with retry-with-backoff. When json_mode=True, asks
     Groq for a JSON object response and parses it (returns a dict/list, or
     raises ValueError if parsing fails after a salvage attempt). model
@@ -117,7 +117,24 @@ def llm(user_prompt, system_prompt=SYSTEM_PROMPT, json_mode=False, max_tokens=No
     for its verification calls, since that judgment is more nuanced than
     the everyday 8B model reliably gets right - verified live: the 8B
     model kept mislabeling "one exemption among fifty" as a "strong"
-    match to the whole exemptions section)."""
+    match to the whole exemptions section).
+
+    tools, when given, uses Groq's native function-calling instead of
+    json_mode's "describe a JSON shape in the prompt and hope" approach -
+    added for Agentic RAG specifically, after the Groq model swap
+    (openai/gpt-oss-20b) broke its old json_mode action-JSON design.
+    Verified live: this model has its own tool-calling instinct and tries
+    to make a real structured tool-call even when json_mode is used and
+    no tools are registered, which Groq's backend rejects outright
+    ("Tool choice is none, but model called a tool") - fighting that
+    instinct with prompt wording is unreliable; working WITH it via real
+    tool registration is the correct fix. Returns a plain
+    {"tool": name, **arguments} dict, normalized to look exactly like
+    the old json_mode action shape so callers don't need to change
+    anything downstream of this function. Mutually exclusive with
+    json_mode (Groq's API doesn't combine response_format with tools).
+    Groq-only - the local Ollama fallback doesn't get this, out of scope
+    since Agentic is a Groq-tier-only pattern in practice already."""
     if max_tokens is None:
         max_tokens = GROQ_NUM_PREDICT if GROQ_API_KEY else OLLAMA_NUM_PREDICT
     if GROQ_API_KEY:
@@ -125,7 +142,10 @@ def llm(user_prompt, system_prompt=SYSTEM_PROMPT, json_mode=False, max_tokens=No
 
         client = _get_groq()
         kwargs = {}
-        if json_mode:
+        if tools:
+            kwargs["tools"] = tools
+            kwargs["tool_choice"] = "required"
+        elif json_mode:
             kwargs["response_format"] = {"type": "json_object"}
         for attempt in range(GROQ_MAX_RETRIES):
             try:
@@ -139,7 +159,17 @@ def llm(user_prompt, system_prompt=SYSTEM_PROMPT, json_mode=False, max_tokens=No
                     max_tokens=max_tokens,
                     **kwargs,
                 )
-                text = response.choices[0].message.content
+                message = response.choices[0].message
+                text = message.content
+                if tools:
+                    if not message.tool_calls:
+                        raise ValueError("model did not call a tool despite tool_choice='required'")
+                    call = message.tool_calls[0]
+                    try:
+                        arguments = json.loads(call.function.arguments)
+                    except json.JSONDecodeError as e:
+                        raise ValueError(f"tool call arguments not valid JSON: {e}") from e
+                    tool_result = {"tool": call.function.name, **arguments}
                 if response.usage:
                     _record_usage(
                         {
@@ -172,6 +202,8 @@ def llm(user_prompt, system_prompt=SYSTEM_PROMPT, json_mode=False, max_tokens=No
                     raise ValueError(f"Groq JSON mode failed: {e}") from e
                 raise
     else:
+        if tools:
+            raise ValueError("tools= is Groq-only, no local Ollama equivalent implemented")
         import ollama
 
         client = ollama.Client()
@@ -186,6 +218,8 @@ def llm(user_prompt, system_prompt=SYSTEM_PROMPT, json_mode=False, max_tokens=No
         )
         text = response["message"]["content"]
 
+    if tools:
+        return tool_result
     if not json_mode:
         return text
     return parse_json(text)
