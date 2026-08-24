@@ -70,7 +70,19 @@ GROQ_MODEL = os.environ.get("GROQ_MODEL", "openai/gpt-oss-20b")
 # model unaffected by the Groq model swap above, so its own budget
 # shouldn't get inflated along with Groq's just because they used to be
 # the same number by coincidence.
-GROQ_NUM_PREDICT = int(os.environ.get("GROQ_NUM_PREDICT", "1200"))
+#
+# Raised again from 1200 to 2500 after the deferred re-verification sweep
+# found a real, reproducible empty-answer case this default was still too
+# tight for: the Income-tax Act 2025's Section 194 (its known garbled
+# rate-table extraction, already documented elsewhere) needed 1911
+# completion tokens to finish naturally - 1200 cut it off with nothing
+# written, not just this one shared budget's smaller sibling values (see
+# hyde.py's own near-identical lesson: 600 measured too tight for a real
+# call needing 611, landed on real headroom instead of the edge). This
+# default feeds most patterns' actual final-answer generation, so
+# under-provisioning it produces a silent empty answer to the user, not
+# an error - the worst failure mode to leave under-budgeted.
+GROQ_NUM_PREDICT = int(os.environ.get("GROQ_NUM_PREDICT", "2500"))
 OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "llama3.2:3b")
 OLLAMA_NUM_CTX = int(os.environ.get("OLLAMA_NUM_CTX", "6144"))
 OLLAMA_NUM_PREDICT = int(os.environ.get("OLLAMA_NUM_PREDICT", "500"))

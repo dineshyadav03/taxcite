@@ -87,9 +87,9 @@
       "question": "What does section 292 of the Income-tax Act, 1961 say about cognizance of offences?",
       "type": "exact_section",
       "retrieval_hit": true,
-      "citation_accurate": true,
-      "refused": false,
-      "pass": true
+      "citation_accurate": null,
+      "refused": true,
+      "pass": false
     },
     {
       "id": "2025-01",
@@ -149,10 +149,10 @@
       "id": "2025-07",
       "question": "What does section 139 of the Income-tax Act, 2025 say?",
       "type": "exact_section",
-      "retrieval_hit": false,
+      "retrieval_hit": true,
       "citation_accurate": true,
       "refused": false,
-      "pass": false
+      "pass": true
     },
     {
       "id": "2025-08",
@@ -168,7 +168,7 @@
       "question": "How does section 139 differ between the old 1961 Act and the new 2025 Act?",
       "type": "comparison",
       "refused": false,
-      "answer_preview": "Section 139 of the Income-tax Act, 2025, and the Income-tax Act, 1961, differ in their content and purpose. The 1961 Act does not have a section 139, as the retrieved section is from the 2025 Act.\n\nHo",
+      "answer_preview": "I\u2019m sorry, but the retrieved sections only contain the text of Section\u202f139 from the Income\u2011tax Act,\u202f2025.  No section\u202f139 from the Income\u2011tax Act,\u202f1961 was provided, so I cannot compare the two provis",
       "covers_both_acts": true,
       "pass": true
     },
@@ -187,7 +187,8 @@
       "pass": true
     }
   ],
-  "retrieval_hit_rate": 0.9444444444444444,
-  "citation_accuracy": 0.9444444444444444,
-  "refusal_accuracy": 1.0
+  "retrieval_hit_rate": 1.0,
+  "citation_accuracy": 0.8888888888888888,
+  "refusal_accuracy": 1.0,
+  "all_passed": false
 }
