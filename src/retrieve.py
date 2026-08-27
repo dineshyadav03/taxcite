@@ -132,10 +132,26 @@ def exact_section_lookup(query):
         return []
     section_no = m.group(1)
 
+    # Independent checks, not if/elif - a comparison question naturally
+    # names BOTH Acts ("the old 1961 Act and the new 2025 Act"), and the
+    # original elif matched 2025 first, silently dropping the 1961 side
+    # entirely for every such question. Verified live: this was still
+    # quietly breaking compare-01 (the project's own flagship 1961-vs-
+    # 2025 example) - a grading-layer fix earlier this session made a
+    # single-Act partial match survive grading, but the ROOT gap (the
+    # 1961 Act's exact match never being fetched at all) was never
+    # actually closed, and a more conservative model surfaced it again
+    # by honestly declining to compare with only one side in hand rather
+    # than answering from incomplete context anyway. Now: filter to one
+    # Act only when the query unambiguously names just that one; a query
+    # naming both (or neither) searches both, matching this function's
+    # own docstring, not just its previous behavior.
+    mentions_2025 = bool(_ACT_2025_RE.search(query))
+    mentions_1961 = bool(_ACT_1961_RE.search(query))
     act_filter = None
-    if _ACT_2025_RE.search(query):
+    if mentions_2025 and not mentions_1961:
         act_filter = "itact2025"
-    elif _ACT_1961_RE.search(query):
+    elif mentions_1961 and not mentions_2025:
         act_filter = "itact1961"
 
     where = {"section": section_no}
