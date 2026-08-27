@@ -6,9 +6,9 @@
       "question": "Who is required to file an income tax return under the Income-tax Act, 1961?",
       "type": "topical",
       "retrieval_hit": true,
-      "citation_accurate": false,
+      "citation_accurate": true,
       "refused": false,
-      "pass": false
+      "pass": true
     },
     {
       "id": "1961-02",
@@ -168,7 +168,7 @@
       "question": "How does section 139 differ between the old 1961 Act and the new 2025 Act?",
       "type": "comparison",
       "refused": false,
-      "answer_preview": "I\u2019m sorry, but the retrieved sections only contain the text of Section\u202f139 from the Income\u2011tax Act,\u202f2025.  No section\u202f139 from the Income\u2011tax Act,\u202f1961 was provided, so I cannot compare the two provis",
+      "answer_preview": "**Key differences between the two versions of Section\u202f139**\n\n| Feature | **Income\u2011tax Act,\u202f1961 \u2013 Section\u202f139** | **Income\u2011tax Act,\u202f2025 \u2013 Section\u202f139** |\n|---------|----------------------------------",
       "covers_both_acts": true,
       "pass": true
     },
@@ -188,7 +188,7 @@
     }
   ],
   "retrieval_hit_rate": 1.0,
-  "citation_accuracy": 0.8333333333333334,
+  "citation_accuracy": 0.8888888888888888,
   "refusal_accuracy": 1.0,
   "all_passed": false
 }
